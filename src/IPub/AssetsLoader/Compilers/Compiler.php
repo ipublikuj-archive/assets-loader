@@ -24,7 +24,6 @@ use IPub\AssetsLoader\Diagnostics;
 use IPub\AssetsLoader\Exceptions;
 use IPub\AssetsLoader\Files;
 use IPub\AssetsLoader\Filters;
-use Tracy\Debugger;
 
 abstract class Compiler extends Nette\Object
 {

@@ -15,7 +15,6 @@
 namespace IPub\AssetsLoader\Diagnostics;
 
 use Nette;
-use Nette\Templating;
 use Nette\Application;
 
 use Latte;
