@@ -1,0 +1,37 @@
+services:
+	# CSS url filter
+	filters.files.cssUrlsFilter:
+		class: IPub\AssetsLoader\Filters\Files\CssUrlsFilter
+		arguments: [%wwwDir%]
+		tags: [ipub.assetsloader.filter]
+		autowired: no
+
+	# LESS file filter
+	filters.files.lessFilter:
+		class: IPub\AssetsLoader\Filters\Files\LessFilter
+		tags: [ipub.assetsloader.filter]
+		autowired: no
+
+	# CoffeeScript file filter
+	filters.files.coffeScriptFilter:
+		class: IPub\AssetsLoader\Filters\Files\CoffeeScriptFilter
+		tags: [ipub.assetsloader.filter]
+		autowired: no
+
+	# CSS minify content filter
+	filters.content.styleCompressor:
+		class: IPub\AssetsLoader\Filters\Content\StyleCompressor
+		tags: [ipub.assetsloader.filter]
+		autowired: no
+
+	# JS minify content filter
+	filters.content.scriptCompressor:
+		class: IPub\AssetsLoader\Filters\Content\ScriptCompressor
+		tags: [ipub.assetsloader.filter]
+		autowired: no
+
+	# CSS fix import files
+	filters.content.cssImportFilter:
+		class: IPub\AssetsLoader\Filters\Content\CssImportFilter
+		tags: [ipub.assetsloader.filter]
+		autowired: no

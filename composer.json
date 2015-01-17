@@ -1,0 +1,40 @@
+{
+	"name"			: "ipub/assets-loader",
+	"type"			: "library",
+	"description"	: "Tool for loading static CSS and JS files for Nette Framework",
+	"keywords"		: ["nette", "assets", "css", "js", "javascript", "tools"],
+	"homepage"		: "https://github.com/iPublikuj/assets-loader.git",
+	"license"		: ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+
+	"authors"		: [
+		{
+			"name"		: "Adam Kadlec",
+			"homepage"	: "http://www.ipublikuj.eu/"
+		}
+	],
+
+	"support": {
+		"email"		:"support@ipublikuj.eu",
+		"issues"	:"https://github.com/iPublikuj/assets-loader/issues"
+	},
+
+	"require": {
+		"php"				: ">=5.4",
+		"nette/application"	: "~2.2",
+		"nette/di"			: "~2.2",
+		"nette/utils"		: "~2.2"
+	},
+
+	"require-dev": {
+		"nette/nette"		: "~2.2",
+		"nette/tester"		: "@dev",
+		"tracy/tracy"		: "@dev",
+		"janmarek/mockista"	: "@dev"
+	},
+
+	"autoload": {
+		"psr-0": {
+			"IPub\\AssetsLoader\\": "src/"
+		}
+	}
+}
