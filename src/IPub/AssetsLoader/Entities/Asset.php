@@ -74,7 +74,8 @@ class Asset extends Nette\Object implements IAsset
 	public function setSourceDir($sourceDir)
 	{
 		if (!is_dir($sourceDir)) {
-			throw new Exceptions\DirectoryNotFoundException('Invalid set source directory given.');
+			$sourceDir = NULL;
+			//throw new Exceptions\DirectoryNotFoundException('Invalid set source directory given.');
 		}
 
 		$this->sourceDir = (string) $sourceDir;

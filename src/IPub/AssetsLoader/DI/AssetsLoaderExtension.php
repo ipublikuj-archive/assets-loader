@@ -69,7 +69,7 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 	 * @var array
 	 */
 	protected $defaultAsset = array(
-		'css' => array(
+		self::TYPE_CSS => array(
 			'sourceDir'		=> '%wwwDir%/css',
 			'files'			=> [],
 			'filters'		=> [
@@ -78,7 +78,7 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 			],
 			'joinFiles'		=> TRUE,
 		),
-		'js' => array(
+		self::TYPE_JS => array(
 			'sourceDir'		=> '%wwwDir%/js',
 			'files'			=> [],
 			'filters'		=> [
@@ -146,9 +146,35 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 				}
 			}
 
+			// Remove packages definition
+			unset($assetConfig['packages']);
+
 			// Update set configuration
 			$this->assets[$name] = $assetConfig;
 		}
+
+		// Create default asset
+		$defaultAsset = [
+			self::TYPE_CSS	=> $config[self::TYPE_CSS],
+			self::TYPE_JS	=> $config[self::TYPE_JS],
+		];
+
+		// Check for packages
+		if (isset($config['packages']) === TRUE) {
+			foreach ($config['packages'] as $package) {
+				foreach ([self::TYPE_CSS, self::TYPE_JS] as $type) {
+					if (isset($package[$type])) {
+						$defaultAsset = DI\Config\Helpers::merge([
+							$type => [
+								'files' => $package[$type]
+							]
+						], $assetConfig);
+					}
+				}
+			}
+		}
+
+		$this->assets['default'] = $defaultAsset;
 
 		// Register diagnostic panel
 		if ($config['debugger'] && interface_exists('Tracy\IBarPanel')) {
@@ -180,15 +206,13 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 			// Get files from extensions
 			$files = $extension->getStaticFiles();
 
-			if (isset($this->assets['default'])) {
-				foreach ([self::TYPE_CSS, self::TYPE_JS] as $type) {
-					if (isset($files[$type])) {
-						$this->assets['default'] = DI\Config\Helpers::merge([
-							$type => [
-								'files' => $files[$type]
-							]
-						], $this->assets['default']);
-					}
+			foreach ([self::TYPE_CSS, self::TYPE_JS] as $type) {
+				if (isset($files[$type])) {
+					$this->assets['default'] = DI\Config\Helpers::merge([
+						$type => [
+							'files' => $files[$type]
+						]
+					], $this->assets['default']);
 				}
 			}
 
