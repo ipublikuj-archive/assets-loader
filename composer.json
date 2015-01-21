@@ -37,6 +37,9 @@
 	"autoload": {
 		"psr-0": {
 			"IPub\\AssetsLoader\\": "src/"
-		}
+		},
+		"classmap": [
+			"src/IPub/AssetsLoader/Application/Presenter.php"
+		]
 	}
 }
