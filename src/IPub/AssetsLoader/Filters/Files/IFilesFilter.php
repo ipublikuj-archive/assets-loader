@@ -14,14 +14,18 @@
 
 namespace IPub\AssetsLoader\Filters\Files;
 
+use IPub;
+use IPub\AssetsLoader;
+use IPub\AssetsLoader\Compilers;
+
 interface IFilesFilter
 {
 	/**
 	 * @param $code
-	 * @param \IPub\AssetsLoader\Compilers\Compiler $loader
+	 * @param Compilers\Compiler $compiler
 	 * @param $file
 	 *
 	 * @return string
 	 */
-	public function __invoke($code, \IPub\AssetsLoader\Compilers\Compiler $loader, $file);
+	public function __invoke($code, Compilers\Compiler $compiler, $file);
 }

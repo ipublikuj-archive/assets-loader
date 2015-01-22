@@ -14,6 +14,10 @@
 
 namespace IPub\AssetsLoader\Filters\Files;
 
+use IPub;
+use IPub\AssetsLoader;
+use IPub\AssetsLoader\Compilers;
+
 class CoffeeScriptFilter extends FilesFilter
 {
 	/**
@@ -38,12 +42,12 @@ class CoffeeScriptFilter extends FilesFilter
 	 * Invoke filter
 	 *
 	 * @param string $code
-	 * @param \IPub\AssetsLoader\Compilers\Compiler $loader
+	 * @param Compilers\Compiler $compiler
 	 * @param string $file
 	 *
 	 * @return string
 	 */
-	public function __invoke($code, \IPub\AssetsLoader\Compilers\Compiler $loader, $file)
+	public function __invoke($code, Compilers\Compiler $compiler, $file)
 	{
 		if (pathinfo($file, PATHINFO_EXTENSION) === 'coffee') {
 			$code = $this->compileCoffee($code);

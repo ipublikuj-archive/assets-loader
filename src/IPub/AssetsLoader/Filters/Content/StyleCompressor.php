@@ -19,6 +19,7 @@ namespace IPub\AssetsLoader\Filters\Content;
 
 use IPub;
 use IPub\AssetsLoader;
+use IPub\AssetsLoader\Compilers;
 use IPub\AssetsLoader\Filters;
 
 class StyleCompressor implements IContentFilter, Filters\IFilter
@@ -34,11 +35,11 @@ class StyleCompressor implements IContentFilter, Filters\IFilter
 	 * Minify a CSS string
 	 *
 	 * @param string $code
-	 * @param \IPub\AssetsLoader\Compilers\Compiler $loader
+	 * @param Compilers\Compiler $compiler
 	 *
 	 * @return string
 	 */
-	public function __invoke($code, \IPub\AssetsLoader\Compilers\Compiler $loader)
+	public function __invoke($code, Compilers\Compiler $compiler)
 	{
 		$code = str_replace("\r\n", "\n", $code);
 

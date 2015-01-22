@@ -19,6 +19,7 @@ namespace IPub\AssetsLoader\Filters\Content;
 
 use IPub;
 use IPub\AssetsLoader;
+use IPub\AssetsLoader\Compilers;
 use IPub\AssetsLoader\Filters;
 
 class ScriptCompressor implements IContentFilter, Filters\IFilter
@@ -39,11 +40,11 @@ class ScriptCompressor implements IContentFilter, Filters\IFilter
 	 * Minify a Javascript string
 	 *
 	 * @param string $code
-	 * @param \IPub\AssetsLoader\Compilers\Compiler $loader
+	 * @param Compilers\Compiler $compiler
 	 *
 	 * @return string
 	 */
-	public function __invoke($code, \IPub\AssetsLoader\Compilers\Compiler $loader)
+	public function __invoke($code, Compilers\Compiler $compiler)
 	{
 		$this->input		= str_replace("\r\n", "\n", $code);
 		$this->inputLength	= strlen($this->input);

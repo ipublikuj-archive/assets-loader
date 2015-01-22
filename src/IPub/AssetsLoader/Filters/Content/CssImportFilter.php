@@ -18,6 +18,7 @@ namespace IPub\AssetsLoader\Filters\Content;
 
 use IPub;
 use IPub\AssetsLoader;
+use IPub\AssetsLoader\Compilers;
 use IPub\AssetsLoader\Filters;
 
 class CssImportFilter implements IContentFilter, Filters\IFilter
@@ -26,11 +27,11 @@ class CssImportFilter implements IContentFilter, Filters\IFilter
 	 * Move import to the top of the document
 	 *
 	 * @param string $code
-	 * @param \IPub\AssetsLoader\Compilers\Compiler $loader
+	 * @param Compilers\Compiler $compiler
 	 *
 	 * @return string
 	 */
-	public function __invoke($code, \IPub\AssetsLoader\Compilers\Compiler $loader)
+	public function __invoke($code, Compilers\Compiler $compiler)
 	{
 		// move @import rules to the top
 		$regexp = '/@import[^;]+;/i';

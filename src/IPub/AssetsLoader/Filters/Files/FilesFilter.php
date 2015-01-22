@@ -14,11 +14,13 @@
 
 namespace IPub\AssetsLoader\Filters\Files;
 
+use Nette;
+
 use IPub;
 use IPub\AssetsLoader;
 use IPub\AssetsLoader\Filters;
 
-abstract class FilesFilter extends \Nette\Object implements IFilesFilter, Filters\IFilter
+abstract class FilesFilter extends Nette\Object implements IFilesFilter, Filters\IFilter
 {
 	/**
 	 * @param string
