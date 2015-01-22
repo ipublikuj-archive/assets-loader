@@ -2,7 +2,6 @@ services:
 	# CSS url filter
 	filters.files.cssUrlsFilter:
 		class: IPub\AssetsLoader\Filters\Files\CssUrlsFilter
-		arguments: [%wwwDir%]
 		tags: [ipub.assetsloader.filter]
 		autowired: no
 

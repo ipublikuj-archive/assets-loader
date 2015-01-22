@@ -119,14 +119,14 @@ class CssLoader extends AssetsLoader
 			// Compile files collection
 			$result = $this->compiler->generate($this->files->getFiles(), $this->contentType);
 
-			echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified])), PHP_EOL;
+			echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified])), PHP_EOL;
 
 		} else {
 			foreach($this->files->getFiles() as $filename) {
 				// Compile single file
 				$result = $this->compiler->generate([$filename], $this->contentType);
 
-				echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified])), PHP_EOL;
+				echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified])), PHP_EOL;
 			}
 		}
 	}
@@ -163,7 +163,7 @@ class CssLoader extends AssetsLoader
 		// Compile files collection
 		$result = $this->compiler->generate($this->files->getFiles(), $this->contentType);
 
-		$link = $this->getPresenter()->link(':IPub:AssetsLoader:', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified]);
+		$link = $this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified]);
 
 		if ($hasArgs) {
 			$this->setFiles($backup);

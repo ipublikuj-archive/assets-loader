@@ -16,20 +16,17 @@
 
 namespace IPub\AssetsLoader\Filters\Files;
 
+use Nette;
+use Nette\Application;
+
 use IPub;
 use IPub\AssetsLoader;
-use IPub\AssetsLoader\Exceptions;
+use IPub\AssetsLoader\Caching;
+use IPub\AssetsLoader\Compilers;
 use IPub\AssetsLoader\Files;
 
 class CssUrlsFilter extends FilesFilter
 {
-	/**
-	 * Document root folder
-	 *
-	 * @var string
-	 */
-	protected $docRoot;
-
 	/**
 	 * Site base path
 	 *
@@ -38,32 +35,37 @@ class CssUrlsFilter extends FilesFilter
 	protected $basePath;
 
 	/**
+	 * @var Caching\FileCache
+	 */
+	protected $cache;
+
+	/**
+	 * @var Application\Application
+	 */
+	protected $application;
+
+	/**
 	 * Filter constructor
 	 *
-	 * @param string $docRoot web document root
-	 * @param string $basePath base path
+	 * @param Caching\FileCache $cache
+	 * @param Application\Application $application
 	 */
-	public function __construct($docRoot, $basePath = NULL)
+	public function __construct(Caching\FileCache $cache, Application\Application $application)
 	{
-		$this->docRoot = Files\Path::normalize($docRoot);
-
-		if (!is_dir($this->docRoot)) {
-			throw new Exceptions\InvalidArgumentException('Given document root is not directory.');
-		}
-
-		$this->basePath = $basePath;
+		$this->cache = $cache;
+		$this->application = $application;
 	}
 
 	/**
 	 * Invoke filter
 	 *
 	 * @param string $code
-	 * @param \IPub\AssetsLoader\Compilers\Compiler $loader
+	 * @param Compilers\Compiler $compiler
 	 * @param string $file
 	 *
 	 * @return string
 	 */
-	public function __invoke($code, \IPub\AssetsLoader\Compilers\Compiler $loader, $file)
+	public function __invoke($code, Compilers\Compiler $compiler, $file)
 	{
 		$self = $this;
 
@@ -77,7 +79,6 @@ class CssUrlsFilter extends FilesFilter
 	 * Make relative url absolute
 	 *
 	 * @param string $url image url
-	 * @param string $quote single or double quote
 	 * @param string $cssFile absolute css file path
 	 *
 	 * @return string
@@ -89,54 +90,66 @@ class CssUrlsFilter extends FilesFilter
 			return $url;
 		}
 
+		// Get css file real path
 		$cssFile = Files\Path::normalize($cssFile);
 
-		// Inside document root
-		if (strncmp($cssFile, $this->docRoot, strlen($this->docRoot)) === 0) {
-			$path = $this->basePath . $this->cannonicalizePath(substr(dirname($cssFile), strlen($this->docRoot)) . DIRECTORY_SEPARATOR . $url);
+		// Remove query string
+		$url = preg_replace('/\?.*/', '', $url);
 
-		// Outside document root we don't know
-		} else {
+		// Create full file path
+		$filePath = realpath(rtrim(dirname(realpath($cssFile)), '/') .'/'. $url);
+
+		// Check if file exists
+		if (!$filePath || !file_exists($filePath)) {
 			return $url;
 		}
 
-		// Map image to file path
-		if (preg_match('/\.(gif|png|jpg)$/i', $url)) {
-			$imagePath = realpath(rtrim(dirname(realpath($cssFile)), '/') .'/'. $url);
+		// Check for images which can be encoded
+		if (preg_match('/\.(gif|png|jpg)$/i', $url) && filesize($filePath) <= 10240 && preg_match('/\.(gif|png|jpg)$/i', $filePath, $extension)) {
+			$path = sprintf('data:image/%s;base64,%s', str_replace('jpg', 'jpeg', strtolower($extension[1])), base64_encode(file_get_contents($filePath)));
 
-			if (file_exists($imagePath) && filesize($imagePath) <= 10240 && preg_match('/\.(gif|png|jpg)$/i', $imagePath, $extension)) {
-				$path = sprintf('data:image/%s;base64,%s', str_replace('jpg', 'jpeg', strtolower($extension[1])), base64_encode(file_get_contents($imagePath)));
-			}
+		// Other files
+		} else {
+			// Create file hash
+			$fileHash = $this->getHash($filePath);
+
+			// Save file into cache
+			$this->cache->save(
+				$fileHash,
+				[
+					Caching\FileCache::CONTENT	=> $filePath
+				],
+				[
+					Caching\FileCache::TAGS		=> ['ipub.assetsloader', 'ipub.assetsloader.images'],
+					Caching\FileCache::FILES	=> [$filePath],
+					Caching\FileCache::CONSTS	=> ['Nette\Framework::REVISION'],
+				]
+			);
+
+			// Create route for specific file
+			$path = $this->getPresenter()->link(':IPub:AssetsLoader:files', ['id' => $fileHash]);
 		}
 
 		return $path;
 	}
 
 	/**
-	 * Cannonicalize path
-	 *
-	 * @param string $path
-	 *
-	 * @return string path
+	 * @return Application\IPresenter
 	 */
-	protected function cannonicalizePath($path)
+	protected function getPresenter()
 	{
-		$path = strtr($path, DIRECTORY_SEPARATOR, '/');
+		return $this->application->getPresenter();
+	}
 
-		$pathArr = array();
+	/**
+	 * @param $file
+	 *
+	 * @return string
+	 */
+	protected function getHash($file)
+	{
+		$tmp = $file . filesize($file);
 
-		foreach (explode('/', $path) as $i => $name) {
-			if ($name === '.' || ($name === '' && $i > 0) )
-				continue;
-
-			if ($name === '..') {
-				array_pop($pathArr);
-				continue;
-			}
-
-			$pathArr[] = $name;
-		}
-
-		return implode('/', $pathArr);
+		return substr(md5($tmp), 0, 12);
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Cache.php
+ * FileCache.php
  *
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
@@ -9,7 +9,7 @@
  * @subpackage	Caching
  * @since		5.0
  *
- * @date		16.01.15
+ * @date		22.01.15
  */
 
 namespace IPub\AssetsLoader\Caching;
@@ -20,14 +20,13 @@ use Nette\Caching;
 use IPub;
 use IPub\AssetsLoader;
 
-class Cache extends Caching\Cache
+class FileCache extends Caching\Cache
 {
 	/**
 	 * Define content constants
 	 */
-	const CONTENT_TYPE	= 'contentType';
-	const CONTENT		= 'content';
-	const ETAG			= 'Etag';
+	const CONTENT	= 'content';
+	const ETAG		= 'Etag';
 
 	/**
 	 * Retrieves the specified item from the cache or NULL if the key is not found.
@@ -45,9 +44,8 @@ class Cache extends Caching\Cache
 		$content = $item[self::CONTENT];
 
 		return [
-			self::CONTENT_TYPE	=> $item[self::CONTENT_TYPE],
-			self::ETAG			=> md5($content),
-			self::CONTENT		=> $content
+			self::CONTENT	=> $content,
+			self::ETAG		=> md5($content),
 		];
 	}
 

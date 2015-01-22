@@ -41,23 +41,59 @@ class AssetsLoaderPresenter extends Nette\Object implements Application\IPresent
 	private $request;
 
 	/**
-	 * @var Caching\Cache
+	 * @var Caching\AssetCache
 	 */
-	private $cache;
+	private $assetCache;
+
+	/**
+	 * @var Caching\FileCache
+	 */
+	private $fileCache;
 
 	/**
 	 * @param Http\IRequest $httpRequest
 	 * @param Application\IRouter $router
-	 * @param Caching\Cache $cache
+	 * @param Caching\AssetCache $assetCache
+	 * @param Caching\FileCache $cache
 	 */
 	public function __construct(
 		Http\IRequest $httpRequest = NULL,
 		Application\IRouter $router = NULL,
-		Caching\Cache $cache
+		Caching\AssetCache $assetCache,
+		Caching\FileCache $fileCache
 	) {
 		$this->httpRequest	= $httpRequest;
 		$this->router		= $router;
-		$this->cache		= $cache;
+		$this->assetCache	= $assetCache;
+		$this->fileCache	= $fileCache;
+	}
+
+	/**
+	 * @param $id
+	 *
+	 * @return AssetsLoader\Application\AssetResponse|Application\Responses\TextResponse
+	 */
+	public function actionAssets($id)
+	{
+		if (NULL === ($item = $this->assetCache->getItem(Utils\Strings::webalize($id)))) {
+			return new Application\Responses\TextResponse('');
+		}
+
+		return new AssetsLoader\Application\AssetResponse($item[Caching\AssetCache::CONTENT], $item[Caching\AssetCache::CONTENT_TYPE], $item[Caching\AssetCache::ETAG]);
+	}
+
+	/**
+	 * @param $id
+	 *
+	 * @return AssetsLoader\Application\FileResponse|Application\Responses\TextResponse
+	 */
+	public function actionFiles($id)
+	{
+		if (NULL === ($item = $this->fileCache->getItem(Utils\Strings::webalize($id)))) {
+			return new Application\Responses\TextResponse('');
+		}
+
+		return new AssetsLoader\Application\FileResponse($item[Caching\FileCache::CONTENT]);
 	}
 
 	/**
@@ -83,14 +119,42 @@ class AssetsLoaderPresenter extends Nette\Object implements Application\IPresent
 
 		$params = $request->getParameters();
 
+		if (!isset($params['action'])) {
+			throw new Application\BadRequestException('Parameter action is missing.');
+		}
+
 		if (!isset($params['id'])) {
 			throw new Application\BadRequestException('Parameter id is missing.');
 		}
 
-		if (NULL === ($item = $this->cache->getItem(Utils\Strings::webalize($params['id'])))) {
-			return new Application\Responses\TextResponse('');
+		// calls $this->action<Action>()
+		if (!$response = $this->tryCall(Application\UI\Presenter::formatActionMethod(Utils\Strings::capitalize($params['action'])), $params)) {
+			throw new Application\BadRequestException('Action not callable.');
 		}
 
-		return new AssetsLoader\Application\Response($item[Caching\Cache::CONTENT], $item[Caching\Cache::CONTENT_TYPE], $item[Caching\Cache::ETAG]);
+		return $response;
+	}
+
+	/**
+	 * Calls public method if exists
+	 *
+	 * @param  string
+	 * @param  array
+	 *
+	 * @return bool  does method exist?
+	 */
+	protected function tryCall($method, array $params)
+	{
+		$rc = $this->getReflection();
+
+		if ($rc->hasMethod($method)) {
+			$rm = $rc->getMethod($method);
+
+			if ($rm->isPublic() && !$rm->isAbstract() && !$rm->isStatic()) {
+				return $rm->invokeArgs($this, Application\UI\PresenterComponentReflection::combineArgs($rm, $params));
+			}
+		}
+
+		return FALSE;
 	}
 }

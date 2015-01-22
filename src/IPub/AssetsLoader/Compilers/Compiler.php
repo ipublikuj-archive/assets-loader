@@ -44,7 +44,7 @@ abstract class Compiler extends Nette\Object
 	protected $fileFilters = [];
 
 	/**
-	 * @var Caching\Cache
+	 * @var Caching\AssetCache
 	 */
 	protected $cache;
 
@@ -54,10 +54,10 @@ abstract class Compiler extends Nette\Object
 	protected $debugPanel;
 
 	/**
-	 * @param Caching\Cache $cache
+	 * @param Caching\AssetCache $cache
 	 * @param Diagnostics\Panel $debugPanel
 	 */
-	public function __construct(Caching\Cache $cache, Diagnostics\Panel $debugPanel)
+	public function __construct(Caching\AssetCache $cache, Diagnostics\Panel $debugPanel)
 	{
 		$this->cache = $cache;
 		$this->debugPanel = $debugPanel;
@@ -152,13 +152,13 @@ abstract class Compiler extends Nette\Object
 			$this->cache->save(
 				$hash,
 				[
-					Caching\Cache::CONTENT_TYPE	=> $contentType,
-					Caching\Cache::CONTENT		=> $content
+					Caching\AssetCache::CONTENT_TYPE	=> $contentType,
+					Caching\AssetCache::CONTENT			=> $content
 				],
 				[
-					Caching\Cache::TAGS		=> ['ipub.assetsloader'],
-					Caching\Cache::FILES	=> $files,
-					Caching\Cache::CONSTS	=> ['Nette\Framework::REVISION'],
+					Caching\AssetCache::TAGS	=> ['ipub.assetsloader', 'ipub.assetsloader.assets'],
+					Caching\AssetCache::FILES	=> $files,
+					Caching\AssetCache::CONSTS	=> ['Nette\Framework::REVISION'],
 				]
 			);
 		}

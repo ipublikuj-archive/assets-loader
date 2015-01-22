@@ -38,7 +38,10 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 	 * @var array
 	 */
 	protected $defaults = [
-		'route'				=> '/assetsloader/<id>',
+		'routes'			=> [
+			'assets'	=> '/assets-loader/<id>',
+			'files'		=> '/assets-loader/files-<id>'
+		],
 		self::TYPE_CSS		=> [
 			'sourceDir'	=> '%wwwDir%/css/',
 			'gzip'		=> FALSE,
@@ -106,15 +109,25 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 		$factory = $builder->addDefinition($this->prefix('factory'))
 			->setClass('IPub\AssetsLoader\LoaderFactory');
 
-		// Create extensions route
-		$builder->addDefinition($this->prefix('route'))
-			->setClass('IPub\AssetsLoader\Application\Route', [$config['route'], ['presenter' => 'IPub:AssetsLoader']])
+		// Create extensions route for assets
+		$builder->addDefinition($this->prefix('route.assets'))
+			->setClass('IPub\AssetsLoader\Application\Route', [$config['routes']['assets'], ['presenter' => 'IPub:AssetsLoader', 'action' => 'assets']])
 			->setAutowired(FALSE)
 			->setInject(FALSE);
 
 		// Add route to router
 		$builder->getDefinition('router')
-			->addSetup('IPub\AssetsLoader\Application\Route::prependTo($service, ?)', [$this->prefix('@route')]);
+			->addSetup('IPub\AssetsLoader\Application\Route::prependTo($service, ?)', [$this->prefix('@route.assets')]);
+
+		// Create extensions route for images
+		$builder->addDefinition($this->prefix('route.files'))
+			->setClass('IPub\AssetsLoader\Application\Route', [$config['routes']['files'], ['presenter' => 'IPub:AssetsLoader', 'action' => 'files']])
+			->setAutowired(FALSE)
+			->setInject(FALSE);
+
+		// Add route to router
+		$builder->getDefinition('router')
+			->addSetup('IPub\AssetsLoader\Application\Route::prependTo($service, ?)', [$this->prefix('@route.files')]);
 
 		// Update presenters mapping
 		$builder->getDefinition('nette.presenterFactory')
@@ -123,9 +136,13 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 				['setMapping', 'IPub', 'IPub\IPubModule\*\*Presenter', 'mapping', 'IPub', 'IPub\IPubModule\*\*Presenter']
 			);
 
-		// Create cache service
-		$builder->addDefinition($this->prefix('cache'))
-			->setClass('IPub\AssetsLoader\Caching\Cache', ['@cacheStorage', 'IPub.AssetsLoader'])
+		// Create cache services
+		$builder->addDefinition($this->prefix('cache.assets'))
+			->setClass('IPub\AssetsLoader\Caching\AssetCache', ['@cacheStorage', 'IPub.AssetsLoader.Assets'])
+			->setInject(FALSE);
+
+		$builder->addDefinition($this->prefix('cache.files'))
+			->setClass('IPub\AssetsLoader\Caching\FileCache', ['@cacheStorage', 'IPub.AssetsLoader.Files'])
 			->setInject(FALSE);
 
 		// Collect all assets
@@ -237,7 +254,7 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 			foreach ([self::TYPE_CSS, self::TYPE_JS] as $type) {
 				$compiler = $builder->addDefinition($this->prefix($type . ucfirst($name) . 'Compiler'))
 					->setClass('IPub\AssetsLoader\Compilers\\' . ucfirst($type) . 'Compiler')
-					->setArguments([$this->prefix('@cache')]);
+					->setArguments([$this->prefix('@cache.assets')]);
 
 				// Add content filters
 				foreach ($assetConfig[$type]['filters']['content'] as $filter) {

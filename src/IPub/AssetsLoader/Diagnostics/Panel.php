@@ -73,7 +73,7 @@ final class Panel extends Nette\Object implements Tracy\IBarPanel
 
 	private function link($file, $type, $timestamp)
 	{
-		$link = $this->getPresenter()->link(':IPub:AssetsLoader:', ['type' => $type, 'id' => $file, 'timestamp' => $timestamp]);
+		$link = $this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => $type, 'id' => $file, 'timestamp' => $timestamp]);
 		$name = str_replace(WWW_DIR, '', $file);
 
 		return '<a href="'.$link.'" target="_blank">'.$name.'</a>';

@@ -1,6 +1,6 @@
 <?php
 /**
- * Response.php
+ * AssetResponse.php
  *
  * @copyright	More in license.md
  * @license		http://www.ipublikuj.eu
@@ -22,7 +22,7 @@ use Nette\Utils;
 use IPub;
 use IPub\AssetsLoader;
 
-class Response extends Nette\Object implements Application\IResponse
+class AssetResponse extends Nette\Object implements Application\IResponse
 {
 	/**
 	 * @var string
