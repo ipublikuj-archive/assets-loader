@@ -31,11 +31,6 @@ class Asset extends Nette\Object implements IAsset
 	protected $name;
 
 	/**
-	 * @var string
-	 */
-	protected $sourceDir;
-
-	/**
 	 * @var Files\IFilesCollection
 	 */
 	protected $files;
@@ -66,29 +61,6 @@ class Asset extends Nette\Object implements IAsset
 	public function getName()
 	{
 		return $this->name;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function setSourceDir($sourceDir)
-	{
-		if (!is_dir($sourceDir)) {
-			$sourceDir = NULL;
-			//throw new Exceptions\DirectoryNotFoundException('Invalid set source directory given.');
-		}
-
-		$this->sourceDir = (string) $sourceDir;
-
-		return $this;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getSourceDir()
-	{
-		return $this->sourceDir;
 	}
 
 	/**

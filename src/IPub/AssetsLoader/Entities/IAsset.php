@@ -37,20 +37,6 @@ interface IAsset
 	public function getName();
 
 	/**
-	 * @param string $sourceDir
-	 *
-	 * @return $this
-	 *
-	 * @throw Exceptions\DirectoryNotFoundException
-	 */
-	public function setSourceDir($sourceDir);
-
-	/**
-	 * @return string
-	 */
-	public function getSourceDir();
-
-	/**
 	 * @param array $files
 	 *
 	 * @return $this

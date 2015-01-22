@@ -160,7 +160,6 @@ class LoaderFactory extends Nette\Object
 		// Create set entity
 		$asset = (new Entities\Asset)
 			->setName($configuration['name'])
-			->setSourceDir($configuration['sourceDir'])
 			->setFiles($configuration['files'])
 			->setJoinFiles($configuration['joinFiles']);
 

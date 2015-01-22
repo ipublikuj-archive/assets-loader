@@ -43,7 +43,6 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 			'files'		=> '/assets-loader/files-<id>'
 		],
 		self::TYPE_CSS		=> [
-			'sourceDir'	=> '%wwwDir%/css/',
 			'gzip'		=> FALSE,
 			'files'		=> [],
 			'filters'	=> [
@@ -53,7 +52,6 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 			'joinFiles'	=> TRUE,
 		],
 		self::TYPE_JS		=> [
-			'sourceDir'	=> '%wwwDir%/js/',
 			'gzip'		=> FALSE,
 			'files'		=> [],
 			'filters'	=> [
@@ -73,7 +71,6 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 	 */
 	protected $defaultAsset = array(
 		self::TYPE_CSS => array(
-			'sourceDir'		=> '%wwwDir%/css',
 			'files'			=> [],
 			'filters'		=> [
 				'files'		=> [],
@@ -82,7 +79,6 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 			'joinFiles'		=> TRUE,
 		),
 		self::TYPE_JS => array(
-			'sourceDir'		=> '%wwwDir%/js',
 			'files'			=> [],
 			'filters'		=> [
 				'files'		=> [],
