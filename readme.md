@@ -30,3 +30,5 @@ After that you have to register extension in config.neon.
 extensions:
 	assetsLoader: IPub\AssetsLoader\DI\AssetsLoaderExtension
 ```
+
+## Using
