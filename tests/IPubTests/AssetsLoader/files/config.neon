@@ -1,0 +1,45 @@
+	# Static files web loader
+	assetsLoader:
+		routes:
+			assets	: "assets/<id>[-t<timestamp>][-<gzipped>].<type>"
+			files	: "assets/files-<id>[-t<timestamp>]"
+		css:
+			gzip		: true
+			files		:
+				- %staticFilesDir%/first.css
+				- %staticFilesDir%/second.css
+			filters		:
+				files	: ["cssUrlsFilter", "lessFilter"]
+				content	: ["cssImportFilter"]
+		js:
+			gzip		: true
+			files		:
+				- %staticFilesDir%/first.js
+				- %staticFilesDir%/second.js
+				- http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js
+				- http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js
+			filters		:
+				files	: []
+				content	: ["scriptCompressor"]
+		assets:
+			first:
+				css:
+					gzip		: true
+					files		:
+						- %staticFilesDir%/first.css
+						- %staticFilesDir%/second.css
+					filters		:
+						files	: ["cssUrlsFilter", "lessFilter"]
+						content	: ["cssImportFilter"]
+					joinFiles	: false
+				js:
+					gzip		: true
+					files		:
+						- %staticFilesDir%/first.js
+						- %staticFilesDir%/second.js
+						- http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js
+						- http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js
+					filters		:
+						files	: []
+						content	: ["scriptCompressor"]
+					joinFiles	: false
