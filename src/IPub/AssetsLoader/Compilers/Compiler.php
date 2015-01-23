@@ -58,7 +58,7 @@ abstract class Compiler extends Nette\Object
 	 * @param Caching\AssetCache $cache
 	 * @param Diagnostics\Panel $debugPanel
 	 */
-	public function __construct(Caching\AssetCache $cache, Diagnostics\Panel $debugPanel)
+	public function __construct(Caching\AssetCache $cache, Diagnostics\Panel $debugPanel = NULL)
 	{
 		$this->cache = $cache;
 		$this->debugPanel = $debugPanel;
@@ -148,7 +148,9 @@ abstract class Compiler extends Nette\Object
 			$content = $this->getContent($files);
 
 			// Add compiled files into diagnostics panel
-			$this->debugPanel->addFile($files, $hash, $this->type, $lastModified, memory_get_peak_usage() - $before);
+			if ($this->debugPanel) {
+				$this->debugPanel->addFile($files, $hash, $this->type, $lastModified, memory_get_peak_usage() - $before);
+			}
 
 			$this->cache->save(
 				$hash,
