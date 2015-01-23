@@ -114,19 +114,28 @@ class CssLoader extends AssetsLoader
 			echo $this->getElement($file), PHP_EOL;
 		}
 
-		// Local files
-		if ($this->asset->getJoinFiles()) {
-			// Compile files collection
-			$result = $this->compiler->generate($this->files->getFiles(), $this->contentType);
+		$filesByMedia = [];
 
-			echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified])), PHP_EOL;
+		foreach ($this->files as $file) {
+			$filesByMedia[$file->getAttribute()][(string) $file] = $file;
+		}
 
-		} else {
-			foreach($this->files->getFiles() as $filename) {
-				// Compile single file
-				$result = $this->compiler->generate([$filename], $this->contentType);
+		foreach ($filesByMedia as $media => $files) {
+			// Check if we should join all files into one
+			if ($this->asset->getJoinFiles()) {
+				// Compile files collection
+				$result = $this->compiler->generate($files, $this->contentType);
 
 				echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified])), PHP_EOL;
+
+			// Leave files splitted
+			} else {
+				foreach ($files as $file) {
+					// Compile single file
+					$result = $this->compiler->generate([$file], $this->contentType);
+
+					echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified])), PHP_EOL;
+				}
 			}
 		}
 	}
@@ -156,12 +165,22 @@ class CssLoader extends AssetsLoader
 			$this->setFiles($newFiles);
 		}
 
+		$filesByMedia = [];
+
+		foreach ($this->files as $file) {
+			$filesByMedia[$file->getAttribute()][(string) $file] = $file;
+		}
+
+		if (count($filesByMedia)>1) {
+			throw new Exceptions\InvalidStateException("Can't generate link for combined media.");
+		}
+
 		if (!$this->asset->getJoinFiles()) {
 			throw new Exceptions\InvalidStateException("Can't generate link with disabled joinFiles.");
 		}
 
 		// Compile files collection
-		$result = $this->compiler->generate($this->files->getFiles(), $this->contentType);
+		$result = $this->compiler->generate(reset($filesByMedia), $this->contentType);
 
 		$link = $this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified]);
 

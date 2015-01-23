@@ -52,17 +52,18 @@ class JsLoader extends AssetsLoader
 			echo $this->getElement($file), PHP_EOL;
 		}
 
-		// Local files
+		// Check if we should join all files into one
 		if ($this->asset->getJoinFiles()) {
 			// Compile files collection
 			$result = $this->compiler->generate($this->files->getFiles(), $this->contentType);
 
 			echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'js', 'id' => $result->hash, 'timestamp' => $result->lastModified])), PHP_EOL;
 
+		// Leave files splitted
 		} else {
-			foreach($this->files->getFiles() as $filename) {
+			foreach($this->files as $file) {
 				// Compile single file
-				$result = $this->compiler->generate([$filename], $this->contentType);
+				$result = $this->compiler->generate([$file], $this->contentType);
 
 				echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'js', 'id' => $result->hash, 'timestamp' => $result->lastModified])), PHP_EOL;
 			}

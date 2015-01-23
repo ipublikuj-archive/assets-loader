@@ -21,6 +21,7 @@ use IPub;
 use IPub\AssetsLoader;
 use IPub\AssetsLoader\Caching;
 use IPub\AssetsLoader\Diagnostics;
+use IPub\AssetsLoader\Entities;
 use IPub\AssetsLoader\Exceptions;
 use IPub\AssetsLoader\Files;
 use IPub\AssetsLoader\Filters;
@@ -130,7 +131,7 @@ abstract class Compiler extends Nette\Object
 	/**
 	 * Load content and save file
 	 *
-	 * @param array $files
+	 * @param Entities\IFile[] $files
 	 * @param string $contentType
 	 *
 	 * @return Utils\ArrayHash
@@ -157,7 +158,7 @@ abstract class Compiler extends Nette\Object
 				],
 				[
 					Caching\AssetCache::TAGS	=> ['ipub.assetsloader', 'ipub.assetsloader.assets'],
-					Caching\AssetCache::FILES	=> $files,
+					Caching\AssetCache::FILES	=> array_keys($files),
 					Caching\AssetCache::CONSTS	=> ['Nette\Framework::REVISION'],
 				]
 			);
@@ -201,7 +202,8 @@ abstract class Compiler extends Nette\Object
 		$name = $this->getHash($files);
 
 		if (count($files) === 1) {
-			$name .= '-' . pathinfo($files[0], PATHINFO_FILENAME);
+			$file = reset($files);
+			$name .= '-' . pathinfo($file->getPath(), PATHINFO_FILENAME);
 		}
 
 		return sprintf($this->filename, $name);
@@ -219,9 +221,7 @@ abstract class Compiler extends Nette\Object
 		$tmp = [];
 
 		foreach ($files as $file) {
-			if (file_exists($file)) {
-				$tmp[] = $file . filesize($file);
-			}
+			$tmp[] = (string) $file . $file->getFileSize();
 		}
 
 		return substr(md5(implode(';', $tmp)), 0, 12);
@@ -236,10 +236,10 @@ abstract class Compiler extends Nette\Object
 	 */
 	protected function loadFile($file)
 	{
-		$content = file_get_contents($file);
+		$content = file_get_contents($file->getPath());
 
 		foreach ($this->fileFilters as $filter) {
-			$content = call_user_func($filter, $content, $this, $file);
+			$content = call_user_func($filter, $content, $this, $file->getPath());
 		}
 
 		return $content;

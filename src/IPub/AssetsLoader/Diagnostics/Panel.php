@@ -22,6 +22,10 @@ use Latte\Runtime;
 
 use Tracy;
 
+use IPub;
+use IPub\AssetsLoader;
+use IPub\AssetsLoader\Entities;
+
 final class Panel extends Nette\Object implements Tracy\IBarPanel
 {
 	/**
@@ -53,16 +57,16 @@ final class Panel extends Nette\Object implements Tracy\IBarPanel
 	{
 		if (is_array($source)) {
 			foreach ($source as $file) {
-				$this->files[$file]=[
-					'id'			=> $id,
-					'type'			=> $type,
-					'memory'		=> $memory,
-					'lastModified'	=> $lastModified
+				$this->files[(string) $file] = [
+					'id' => $id,
+					'type' => $type,
+					'memory' => $memory,
+					'lastModified' => $lastModified
 				];
 			}
 
 		} else {
-			$this->files[$source]=[
+			$this->files[(string) $source]=[
 				'id'			=> $id,
 				'type'			=> $type,
 				'memory'		=> $memory,

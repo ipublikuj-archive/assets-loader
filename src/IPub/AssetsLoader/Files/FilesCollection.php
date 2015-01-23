@@ -19,6 +19,7 @@ use Nette\Utils;
 
 use IPub;
 use IPub\AssetsLoader;
+use IPub\AssetsLoader\Entities;
 use IPub\AssetsLoader\Exceptions;
 
 class FilesCollection implements IFilesCollection, \IteratorAggregate
@@ -29,7 +30,7 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 	private $root;
 
 	/**
-	 * @var array
+	 * @var Entities\IFile[]
 	 */
 	private $files = [];
 
@@ -44,33 +45,6 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 	public function __construct($root = NULL)
 	{
 		$this->root = $root;
-	}
-
-	/**
-	 * Make path absolute
-	 *
-	 * @param $path string
-	 *
-	 * @return string
-	 *
-	 * @throws Exceptions\FileNotFoundException
-	 */
-	public function cannonicalizePath($path)
-	{
-
-		$rel = Path::normalize($this->root . DIRECTORY_SEPARATOR . $path);
-
-		if (file_exists($rel)) {
-			return $rel;
-		}
-
-		$abs = Path::normalize($path);
-
-		if (file_exists($abs)) {
-			return $abs;
-		}
-
-		throw new Exceptions\FileNotFoundException("File '$path' does not exist.");
 	}
 
 	/**
@@ -119,7 +93,7 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 	 */
 	public function getFiles()
 	{
-		return array_values($this->files);
+		return $this->files;
 	}
 
 	/**
@@ -127,13 +101,14 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 	 */
 	public function addFile($file)
 	{
-		$file = $this->cannonicalizePath((string) $file);
-
-		if (in_array($file, $this->files)) {
-			return $this;
+		// Check for entity
+		if (!$file instanceof Entities\IFile) {
+			// Create file entity
+			$file = new Entities\File($file);
 		}
 
-		$this->files[] = $file;
+		// Add entity to collection
+		$this->files[(string) $file] = $file;
 
 		return $this;
 	}
@@ -143,7 +118,7 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 	 */
 	public function removeFile($file)
 	{
-		$this->removeFiles(array($file));
+		$this->removeFiles([$file]);
 
 		return $this;
 	}
@@ -153,9 +128,9 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 	 */
 	public function removeFiles(array $files)
 	{
-		$files = array_map([$this, 'cannonicalizePath'], $files);
-
-		$this->files = array_diff($this->files, $files);
+		foreach($files as $file) {
+			unset($this->files[(string) $file]);
+		}
 
 		return $this;
 	}
