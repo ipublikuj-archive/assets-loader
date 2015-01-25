@@ -21,6 +21,7 @@ use IPub;
 use IPub\AssetsLoader;
 use IPub\AssetsLoader\Entities;
 use IPub\AssetsLoader\Exceptions;
+use Tracy\Debugger;
 
 class FilesCollection implements IFilesCollection, \IteratorAggregate
 {
@@ -52,7 +53,7 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 	 */
 	public function setFiles($files)
 	{
-		foreach ($files as $file) {
+		foreach ($files as $key => $file) {
 			// Finder support
 			if (is_array($file) && isset($file['files']) && (isset($file['in']) || isset($file['from']))) {
 				$finder = Utils\Finder::findFiles($file['files']);
@@ -76,10 +77,16 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 			} else {
 				$attribute = NULL;
 
-				// Files with attributes support
+				// Files with attributes support from neon
 				if (is_object($file) && isset($file->value) && isset($file->attributes)) {
 					$attribute = reset($file->attributes);
 					$file = $file->value;
+				}
+
+				// Files with attributes support from template
+				if (is_string($key) && !is_numeric($key)) {
+					$attribute = $file;
+					$file = $key;
 				}
 
 				// Check if file is remote file

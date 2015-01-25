@@ -87,9 +87,13 @@ class JsLoader extends AssetsLoader
 			// Clear files collection
 			$this->clear();
 
+			// Get all arguments which could be files
+			$args = func_get_args();
+			$args = reset($args);
+
 			// Create new collection from arguments
 			$newFiles = new Files\FilesCollection;
-			$newFiles->setFiles(func_get_args());
+			$newFiles->setFiles($args);
 
 			// Create new files collection
 			$this->setFiles($newFiles);
