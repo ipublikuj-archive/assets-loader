@@ -94,13 +94,13 @@ class CssLoader extends AssetsLoader
 	 *
 	 * @return Utils\Html
 	 */
-	public function getElement($source, $media = 'all')
+	public function getElement($source, $media = NULL)
 	{
 		return Utils\Html::el('link')
 			->rel('stylesheet'. ($this->isAlternate() ? ' alternate' : ''))
 			->type($this->contentType)
 			->title($this->title)
-			->media($media)
+			->media(!trim($media) ? 'all' : $media)
 			->href($source);
 	}
 
@@ -126,7 +126,7 @@ class CssLoader extends AssetsLoader
 				// Compile files collection
 				$result = $this->compiler->generate($files, $this->contentType);
 
-				echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified])), PHP_EOL;
+				echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified]), $media), PHP_EOL;
 
 			// Leave files splitted
 			} else {
