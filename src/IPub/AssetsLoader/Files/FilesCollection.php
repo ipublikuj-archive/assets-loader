@@ -74,13 +74,21 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 
 			// Normal files
 			} else {
+				$attribute = NULL;
+
+				// Files with attributes support
+				if (is_object($file) && isset($file->value) && isset($file->attributes)) {
+					$attribute = reset($file->attributes);
+					$file = $file->value;
+				}
+
 				// Check if file is remote file
 				if (Utils\Strings::startsWith($file, 'http://') || Utils\Strings::startsWith($file, 'https://')) {
-					$this->addRemoteFile($file);
+					$this->addRemoteFile($file, $attribute);
 
 				// Local file detected
 				} else {
-					$this->addFile($file);
+					$this->addFile($file, $attribute);
 				}
 			}
 		}
@@ -99,12 +107,12 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 	/**
 	 * {@inheritdoc}
 	 */
-	public function addFile($file)
+	public function addFile($file, $attribute = NULL)
 	{
 		// Check for entity
 		if (!$file instanceof Entities\IFile) {
 			// Create file entity
-			$file = new Entities\File($file);
+			$file = new Entities\File($file, $attribute);
 		}
 
 		// Add entity to collection

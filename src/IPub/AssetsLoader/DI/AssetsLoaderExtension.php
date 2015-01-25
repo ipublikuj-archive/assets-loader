@@ -158,7 +158,7 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 					}
 				}
 			}
-
+Tracy\Debugger::barDump($assetConfig[self::TYPE_CSS]['files']);
 			// Remove packages definition
 			unset($assetConfig['packages']);
 
