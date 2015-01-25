@@ -161,7 +161,8 @@ class LoaderFactory extends Nette\Object
 		$asset = (new Entities\Asset)
 			->setName($configuration['name'])
 			->setFiles($configuration['files'])
-			->setJoinFiles($configuration['joinFiles']);
+			->setJoinFiles($configuration['joinFiles'])
+			->setGzip($configuration['gzip']);
 
 		// Add set into collection
 		$this->assets[$asset->getName()] = new Utils\ArrayHash;

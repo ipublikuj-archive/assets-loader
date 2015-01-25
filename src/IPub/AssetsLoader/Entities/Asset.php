@@ -40,6 +40,11 @@ class Asset extends Nette\Object implements IAsset
 	 */
 	protected $joinFiles = TRUE;
 
+	/**
+	 * @var bool
+	 */
+	protected $gzip = FALSE;
+
 	public function __construct()
 	{
 		$this->files = new Files\FilesCollection;
@@ -109,5 +114,23 @@ class Asset extends Nette\Object implements IAsset
 	public function getJoinFiles()
 	{
 		return $this->joinFiles;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function setGzip($gzip)
+	{
+		$this->gzip = (bool) $gzip;
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function getGzip()
+	{
+		return $this->gzip;
 	}
 }

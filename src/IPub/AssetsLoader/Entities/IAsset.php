@@ -70,4 +70,16 @@ interface IAsset
 	 * @return bool
 	 */
 	public function getJoinFiles();
+
+	/**
+	 * @param bool $gzip
+	 *
+	 * @return $this
+	 */
+	public function setGzip($gzip);
+
+	/**
+	 * @return bool
+	 */
+	public function getGzip();
 }
