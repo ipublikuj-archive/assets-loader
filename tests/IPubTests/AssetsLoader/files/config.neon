@@ -24,7 +24,7 @@
 		assets:
 			first:
 				css:
-					gzip		: true
+					gzip		: false
 					files		:
 						- %staticFilesDir%/first.css
 						- %staticFilesDir%/second.css
@@ -33,7 +33,7 @@
 						content	: ["cssImportFilter"]
 					joinFiles	: false
 				js:
-					gzip		: true
+					gzip		: false
 					files		:
 						- %staticFilesDir%/first.js
 						- %staticFilesDir%/second.js

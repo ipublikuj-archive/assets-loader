@@ -67,6 +67,9 @@ class ExtensionTest extends Tester\TestCase
 
 		Assert::true($dic->getService('assetsLoader.factory')->getAsset('default' .'.'. AssetsLoader\DI\AssetsLoaderExtension::TYPE_CSS)->getJoinFiles());
 		Assert::false($dic->getService('assetsLoader.factory')->getAsset('first' .'.'. AssetsLoader\DI\AssetsLoaderExtension::TYPE_CSS)->getJoinFiles());
+
+		Assert::true($dic->getService('assetsLoader.factory')->getAsset('default' .'.'. AssetsLoader\DI\AssetsLoaderExtension::TYPE_CSS)->getGzip());
+		Assert::false($dic->getService('assetsLoader.factory')->getAsset('first' .'.'. AssetsLoader\DI\AssetsLoaderExtension::TYPE_CSS)->getGzip());
 	}
 }
 
