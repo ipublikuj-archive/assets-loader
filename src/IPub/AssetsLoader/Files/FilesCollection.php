@@ -21,7 +21,6 @@ use IPub;
 use IPub\AssetsLoader;
 use IPub\AssetsLoader\Entities;
 use IPub\AssetsLoader\Exceptions;
-use Tracy\Debugger;
 
 class FilesCollection implements IFilesCollection, \IteratorAggregate
 {
