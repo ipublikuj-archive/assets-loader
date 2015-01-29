@@ -93,7 +93,7 @@ class JsLoader extends AssetsLoader
 
 			// Create new collection from arguments
 			$newFiles = new Files\FilesCollection;
-			$newFiles->setFiles($args);
+			$newFiles->addFiles($args);
 
 			// Create new files collection
 			$this->setFiles($newFiles);

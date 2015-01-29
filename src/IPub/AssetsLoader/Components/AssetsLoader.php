@@ -100,7 +100,7 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 
 			// Create new collection from arguments
 			$newFiles = new Files\FilesCollection;
-			$newFiles->setFiles($args);
+			$newFiles->addFiles($args);
 
 			// Create new files collection
 			$this->setFiles($newFiles);
@@ -133,7 +133,7 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 
 			// Create new collection from arguments
 			$newFiles = new Files\FilesCollection;
-			$newFiles->setFiles($args);
+			$newFiles->addFiles($args);
 
 			// Create new files collection
 			$this->setFiles($newFiles);

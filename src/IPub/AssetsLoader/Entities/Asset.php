@@ -74,7 +74,7 @@ class Asset extends Nette\Object implements IAsset
 	public function setFiles(array $files)
 	{
 		// Add files into collection
-		$this->files->setFiles($files);
+		$this->files->addFiles($files);
 
 		return $this;
 	}

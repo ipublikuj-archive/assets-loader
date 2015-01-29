@@ -24,6 +24,13 @@ interface IFilesCollection
 	public function setFiles($files);
 
 	/**
+	 * @param array|\Traversable $files array list of files
+	 *
+	 * @return $this
+	 */
+	public function addFiles($files);
+
+	/**
 	 * @return array
 	 */
 	public function getFiles();

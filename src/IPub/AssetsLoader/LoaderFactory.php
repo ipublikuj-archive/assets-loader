@@ -6,7 +6,7 @@
  * @license		http://www.ipublikuj.eu
  * @author		Adam Kadlec http://www.ipublikuj.eu
  * @package		iPublikuj:AssetsLoader!
- * @subpackage	AssetsLoader
+ * @subpackage	common
  * @since		5.0
  *
  * @date		30.12.13

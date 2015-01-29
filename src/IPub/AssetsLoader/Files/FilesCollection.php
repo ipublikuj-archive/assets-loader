@@ -22,7 +22,7 @@ use IPub\AssetsLoader;
 use IPub\AssetsLoader\Entities;
 use IPub\AssetsLoader\Exceptions;
 
-class FilesCollection implements IFilesCollection, \IteratorAggregate
+class FilesCollection implements IFilesCollection, \IteratorAggregate, \ArrayAccess
 {
 	/**
 	 * @var string
@@ -51,6 +51,19 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 	 * {@inheritdoc}
 	 */
 	public function setFiles($files)
+	{
+		// Clear files collection
+		$this->clear();
+		// Add new files
+		$this->addFiles($files);
+
+		return $this;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function addFiles($files)
 	{
 		foreach ($files as $key => $file) {
 			// Finder support
@@ -118,7 +131,7 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 		// Check for entity
 		if (!$file instanceof Entities\IFile) {
 			// Create file entity
-			$file = new Entities\File($file, $attribute);
+			$file = new Entities\File((string) $file, $attribute);
 		}
 
 		// Add entity to collection
@@ -210,5 +223,50 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->files);
+	}
+
+	/**
+	 * Whether an application parameter or an object exists
+	 *
+	 * @param  string $offset
+	 *
+	 * @return bool
+	 */
+	public function offsetExists($offset)
+	{
+		return isset($this->files[$offset]);
+	}
+
+	/**
+	 * Gets an application parameter or an object
+	 *
+	 * @param  string $offset
+	 *
+	 * @return Entities\IFile
+	 */
+	public function offsetGet($offset)
+	{
+		return $this->files[$offset];
+	}
+
+	/**
+	 * Sets an application parameter or an object
+	 *
+	 * @param  string $offset
+	 * @param Entities\IFile $value
+	 */
+	public function offsetSet($offset, $value)
+	{
+		$this->files[$offset] = $value;
+	}
+
+	/**
+	 * Unsets an application parameter or an object
+	 *
+	 * @param  string $offset
+	 */
+	public function offsetUnset($offset)
+	{
+		unset($this->files[$offset]);
 	}
 }
