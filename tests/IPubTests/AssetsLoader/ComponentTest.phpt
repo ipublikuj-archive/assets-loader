@@ -24,7 +24,6 @@ use Tester\Assert;
 
 use IPub;
 use IPub\AssetsLoader;
-use Tracy\Debugger;
 
 require __DIR__ . '/../bootstrap.php';
 
