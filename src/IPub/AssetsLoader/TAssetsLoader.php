@@ -29,7 +29,7 @@ trait TAssetsLoader
 	/**
 	 * @param LoaderFactory $assetsLoader
 	 */
-	public function injectPermission(LoaderFactory $assetsLoader) {
+	public function injectAssetsLoader(LoaderFactory $assetsLoader) {
 		$this->assetsLoader = $assetsLoader;
 	}
 }
