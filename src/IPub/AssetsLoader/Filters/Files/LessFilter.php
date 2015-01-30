@@ -18,6 +18,12 @@ use IPub;
 use IPub\AssetsLoader;
 use IPub\AssetsLoader\Compilers;
 
+/**
+ * Less CSS filter
+ *
+ * @author Jan Marek
+ * @license MIT
+ */
 class LessFilter extends FilesFilter
 {
 	/**

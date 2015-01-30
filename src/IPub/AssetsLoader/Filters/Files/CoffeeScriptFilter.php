@@ -18,6 +18,12 @@ use IPub;
 use IPub\AssetsLoader;
 use IPub\AssetsLoader\Compilers;
 
+/**
+ * Coffee script filter
+ *
+ * @author Patrik Votoček
+ * @license MIT
+ */
 class CoffeeScriptFilter extends FilesFilter
 {
 	/**
