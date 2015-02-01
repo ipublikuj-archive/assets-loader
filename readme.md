@@ -31,7 +31,7 @@ extensions:
 	assetsLoader: IPub\AssetsLoader\DI\AssetsLoaderExtension
 ```
 
-Package contains trait, which you will have to use in presenter to implement Assets Loader factory into Presenter. This works only for PHP 5.3+, for older version you can simply copy trait content and paste it into class where you want to use it.
+Package contains trait, which you will have to use in presenter to implement Assets Loader factory into Presenter. This works only for PHP 5.4+, for older version you can simply copy trait content and paste it into class where you want to use it.
 
 ```php
 <?php
