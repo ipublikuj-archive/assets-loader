@@ -121,8 +121,7 @@ class CssUrlsFilter extends FilesFilter
 				],
 				[
 					Caching\FileCache::TAGS		=> ['ipub.assetsloader', 'ipub.assetsloader.images'],
-					Caching\FileCache::FILES	=> [$filePath],
-					Caching\FileCache::CONSTS	=> ['Nette\Framework::REVISION'],
+					Caching\FileCache::FILES	=> [$filePath]
 				]
 			);
 

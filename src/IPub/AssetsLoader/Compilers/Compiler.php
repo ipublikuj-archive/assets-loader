@@ -160,8 +160,7 @@ abstract class Compiler extends Nette\Object
 				],
 				[
 					Caching\AssetCache::TAGS	=> ['ipub.assetsloader', 'ipub.assetsloader.assets'],
-					Caching\AssetCache::FILES	=> array_keys($files),
-					Caching\AssetCache::CONSTS	=> ['Nette\Framework::REVISION'],
+					Caching\AssetCache::FILES	=> array_keys($files)
 				]
 			);
 		}
