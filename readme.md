@@ -4,7 +4,7 @@
 [![Latest Stable Version](https://img.shields.io/packagist/v/ipub/assets-loader.svg?style=flat-square)](https://packagist.org/packages/ipub/assets-loader)
 [![Composer Downloads](https://img.shields.io/packagist/dt/ipub/assets-loader.svg?style=flat-square)](https://packagist.org/packages/ipub/assets-loader)
 
-Tool for loading static CSS and JS files for [Nette Framework](http://nette.org/)
+Extension for loading static CSS and JS files for [Nette Framework](http://nette.org/)
 
 ## Installation
 

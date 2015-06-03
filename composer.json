@@ -1,14 +1,15 @@
 {
 	"name"			: "ipub/assets-loader",
 	"type"			: "library",
-	"description"	: "Tool for loading static CSS and JS files for Nette Framework",
+	"description"	: "Extension for loading static CSS and JS files for Nette Framework",
 	"keywords"		: ["nette", "assets", "css", "js", "javascript", "tools"],
-	"homepage"		: "https://github.com/iPublikuj/assets-loader.git",
+	"homepage"		: "https://github.com/iPublikuj/assets-loader",
 	"license"		: ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
 
-	"authors"		: [
+	"authors": [
 		{
-			"name"		: "Adam Kadlec",
+			"name"		: "iPublikuj:cms",
+			"email"		: "info@ipublikuj.eu",
 			"homepage"	: "http://www.ipublikuj.eu/"
 		}
 	],
