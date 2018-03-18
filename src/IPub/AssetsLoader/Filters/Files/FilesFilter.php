@@ -16,6 +16,8 @@ declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Filters\Files;
 
+use Nette;
+
 use IPub\AssetsLoader\Filters;
 
 abstract class FilesFilter implements IFilesFilter, Filters\IFilter
