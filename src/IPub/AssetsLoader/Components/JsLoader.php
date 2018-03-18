@@ -19,7 +19,6 @@ namespace IPub\AssetsLoader\Components;
 use Nette;
 use Nette\Utils;
 
-use IPub;
 use IPub\AssetsLoader\Exceptions;
 use IPub\AssetsLoader\Files;
 
