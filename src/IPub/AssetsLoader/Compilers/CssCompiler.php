@@ -41,16 +41,26 @@ class CssCompiler extends Compiler
 	 */
 	protected function loadFile(Entities\IFile $file) : string
 	{
+		return $this->loadFileContent($file->getPath());
+	}
+
+	/**
+	 * @param string $file
+	 *
+	 * @return string
+	 */
+	private function loadFileContent(string $file) : string
+	{
 		$content = '';
 
 		// Check if file exists & is readable
-		if (file_exists($file->getPath()) && is_readable($file->getPath())) {
+		if (file_exists($file) && is_readable($file)) {
 			// Load the local CSS stylesheet
-			$content = file_get_contents($file->getPath());
+			$content = file_get_contents($file);
 
 			// Change to the current stylesheet's directory
 			$cwd = getcwd();
-			chdir(dirname($file->getPath()));
+			chdir(dirname($file));
 
 			// Replaces @import commands with the actual stylesheet content
 			// this happens recursively but omits external files
@@ -76,12 +86,12 @@ class CssCompiler extends Compiler
 	 *
 	 * @return string
 	 */
-	protected function loadFileRecursive(array $matches) : string
+	private function loadFileRecursive(array $matches) : string
 	{
 		$filename = $matches[1];
 
 		// Load the imported stylesheet and replace @import commands in there as well
-		$file = $this->loadFile($filename);
+		$file = $this->loadFileContent($filename);
 
 		// If not current directory, alter all url() paths, but not external
 		if (dirname($filename) != '.') {

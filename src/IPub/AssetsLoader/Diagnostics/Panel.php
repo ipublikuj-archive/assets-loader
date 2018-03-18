@@ -86,11 +86,11 @@ final class Panel implements Tracy\IBarPanel
 	/**
 	 * @param string $file
 	 * @param string $type
-	 * @param string $timestamp
+	 * @param int $timestamp
 	 *
 	 * @return string
 	 */
-	private function link(string $file, string $type, string $timestamp) : string
+	private function link(string $file, string $type, int $timestamp) : string
 	{
 		$link = $this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => $type, 'id' => $file, 'timestamp' => $timestamp]);
 		$name = str_replace(WWW_DIR, '', $file);
