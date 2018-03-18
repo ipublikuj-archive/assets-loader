@@ -16,6 +16,5 @@ $composer['require']['nette/application'] = $version;
 $composer['require']['nette/caching'] = $version;
 $composer['require']['nette/di'] = $version;
 $composer['require']['nette/http'] = $version;
-$composer['require']['nette/utils'] = $version;
 $content = json_encode($composer);
 file_put_contents($file, $content);
