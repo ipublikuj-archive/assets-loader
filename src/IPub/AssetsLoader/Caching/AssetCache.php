@@ -16,6 +16,8 @@ declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Caching;
 
+use Nette\Caching;
+
 class AssetCache extends Caching\Cache
 {
 	/**
