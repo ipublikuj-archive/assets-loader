@@ -1,9 +1,8 @@
-nette:
-	application:
-		mapping:
-			*: IPubTests\AssetsLoader\*Presenter
+application:
+	mapping:
+		*: IPubTests\AssetsLoader\*Presenter
 
 services:
 	# Test presenter
- 	presenters.test:
- 		class: IPubTests\AssetsLoader\TestPresenter
+	presenters.test:
+		class: IPubTests\AssetsLoader\TestPresenter

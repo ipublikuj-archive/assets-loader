@@ -2,15 +2,17 @@
 /**
  * CssCompiler.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Compilers
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Compilers
+ * @since          1.0.0
  *
- * @date		29.12.13
+ * @date           29.12.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Compilers;
 
@@ -35,7 +37,7 @@ class CssCompiler extends Compiler
 	 *
 	 * @return string
 	 */
-	protected function loadFile($file)
+	protected function loadFile($file) : string
 	{
 		$content = '';
 
@@ -50,7 +52,7 @@ class CssCompiler extends Compiler
 
 			// Replaces @import commands with the actual stylesheet content
 			// this happens recursively but omits external files
-			$content = preg_replace_callback('/@import\s*(?:url\()?[\'"]?(?![a-z]+:)([^\'"\()]+)[\'"]?\)?;/', array($this, 'loadFileRecursive'), $content);
+			$content = preg_replace_callback('/@import\s*(?:url\()?[\'"]?(?![a-z]+:)([^\'"\()]+)[\'"]?\)?;/', [$this, 'loadFileRecursive'], $content);
 
 			// Remove multiple charset declarations for standards compliance (and fixing Safari problems)
 			$content = preg_replace('/^@charset\s+[\'"](\S*)\b[\'"];/i', '', $content);
@@ -72,7 +74,7 @@ class CssCompiler extends Compiler
 	 *
 	 * @return string
 	 */
-	protected function loadFileRecursive($matches)
+	protected function loadFileRecursive(array $matches) : string
 	{
 		$filename = $matches[1];
 
@@ -81,7 +83,7 @@ class CssCompiler extends Compiler
 
 		// If not current directory, alter all url() paths, but not external
 		if (dirname($filename) != '.') {
-			$file = preg_replace('/url\([\'"]?(?![a-z]+:|\/+)([^\'")]+)[\'"]?\)/i', 'url('. dirname($filename) .'/\1)', $file);
+			$file = preg_replace('/url\([\'"]?(?![a-z]+:|\/+)([^\'")]+)[\'"]?\)/i', 'url(' . dirname($filename) . '/\1)', $file);
 		}
 
 		return $file;

@@ -2,43 +2,44 @@
 /**
  * FilesFilter.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Filters
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Filters
+ * @since          1.0.0
  *
- * @date		29.12.13
+ * @date           29.12.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Filters\Files;
 
-use Nette;
-
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Filters;
 
-abstract class FilesFilter extends Nette\Object implements IFilesFilter, Filters\IFilter
+abstract class FilesFilter implements IFilesFilter, Filters\IFilter
 {
 	/**
-	 * @param string
-	 * @param string|NULL
+	 * Implement nette smart magic
+	 */
+	use Nette\SmartObject;
+
+	/**
+	 * @param string $cmd
+	 * @param string|NULL $stdin
 	 *
 	 * @return string
-	 *
-	 * @throws \RuntimeExeption
 	 */
-	protected function run($cmd, $stdin = NULL)
+	protected function run(string $cmd, ?string $stdin = NULL) : string
 	{
-		$descriptorspec = array(
-			0 => array('pipe', 'r'), // stdin
-			1 => array('pipe', 'w'), // stdout
-			2 => array('pipe', 'w'), // stderr
-		);
+		$descriptorspec = [
+			0 => ['pipe', 'r'], // stdin
+			1 => ['pipe', 'w'], // stdout
+			2 => ['pipe', 'w'], // stderr
+		];
 
-		$pipes = array();
+		$pipes = [];
 		$proc = proc_open($cmd, $descriptorspec, $pipes);
 
 		if (!empty($stdin)) {

@@ -2,29 +2,34 @@
 /**
  * Asset.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Entities
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Entities
+ * @since          1.0.0
  *
- * @date		16.01.15
+ * @date           16.01.15
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Entities;
 
 use Nette;
 use Nette\Utils;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Exceptions;
 use IPub\AssetsLoader\Files;
 use IPub\AssetsLoader\Filters;
 
-class Asset extends Nette\Object implements IAsset
+class Asset implements IAsset
 {
+	/**
+	 * Implement nette smart magic
+	 */
+	use Nette\SmartObject;
+
 	/**
 	 * @var string
 	 */
@@ -53,17 +58,15 @@ class Asset extends Nette\Object implements IAsset
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setName($name)
+	public function setName(string $name) : void
 	{
-		$this->name = (string) $name;
-
-		return $this;
+		$this->name = $name;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getName()
+	public function getName() : string
 	{
 		return $this->name;
 	}
@@ -71,29 +74,25 @@ class Asset extends Nette\Object implements IAsset
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setFiles(array $files)
+	public function setFiles(array $files) : void
 	{
 		// Add files into collection
 		$this->files->addFiles($files);
-
-		return $this;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function addFile($file)
+	public function addFile($file) : void
 	{
 		// Add file into collection
 		$this->files->addFile($file);
-
-		return $this;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getFiles()
+	public function getFiles() : Files\IFilesCollection
 	{
 		return $this->files;
 	}
@@ -101,17 +100,15 @@ class Asset extends Nette\Object implements IAsset
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setJoinFiles($joinFiles)
+	public function setJoinFiles(bool $joinFiles) : void
 	{
-		$this->joinFiles = (bool) $joinFiles;
-
-		return $this;
+		$this->joinFiles = $joinFiles;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getJoinFiles()
+	public function getJoinFiles() : bool
 	{
 		return $this->joinFiles;
 	}
@@ -119,17 +116,15 @@ class Asset extends Nette\Object implements IAsset
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setGzip($gzip)
+	public function setGzip(bool $gzip) : void
 	{
-		$this->gzip = (bool) $gzip;
-
-		return $this;
+		$this->gzip = $gzip;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getGzip()
+	public function getGzip() : bool
 	{
 		return $this->gzip;
 	}

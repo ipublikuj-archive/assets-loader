@@ -2,15 +2,17 @@
 /**
  * AssetsLoaderExtension.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	DI
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     DI
+ * @since          1.0.0
  *
- * @date		30.12.13
+ * @date           30.12.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\DI;
 
@@ -20,48 +22,50 @@ use Nette\PhpGenerator as Code;
 
 use Tracy;
 
-use IPub;
 use IPub\AssetsLoader;
+use IPub\AssetsLoader\Application;
+use IPub\AssetsLoader\Caching;
+use IPub\AssetsLoader\Diagnostics;
 use IPub\AssetsLoader\Entities;
 
 class AssetsLoaderExtension extends DI\CompilerExtension
 {
 	// Define tag string for filters
-	const TAG_FILTER = 'ipub.assetsloader.filter';
+	public const TAG_FILTER = 'ipub.assetsloader.filter';
 
-	const TYPE_CSS	= 'css';
-	const TYPE_JS	= 'js';
+	public const TYPE_CSS = 'css';
+	public const TYPE_JS = 'js';
 
 	/**
 	 * Extension default configuration
 	 *
 	 * @var array
 	 */
-	protected $defaults = [
-		'routes'			=> [
-			'assets'	=> '/assets-loader/<id>',
-			'files'		=> '/assets-loader/files-<id>'
+	private $defaults = [
+		'routes'       => [
+			'assets' => '/assets-loader/<id>',
+			'files'  => '/assets-loader/files-<id>'
 		],
-		self::TYPE_CSS		=> [
-			'gzip'		=> FALSE,
-			'files'		=> [],
-			'filters'	=> [
-				'files'		=> [],
-				'content'	=> []
+		self::TYPE_CSS => [
+			'gzip'      => FALSE,
+			'files'     => [],
+			'filters'   => [
+				'files'   => [],
+				'content' => []
 			],
-			'joinFiles'	=> TRUE,
+			'joinFiles' => TRUE,
 		],
-		self::TYPE_JS		=> [
-			'gzip'		=> FALSE,
-			'files'		=> [],
-			'filters'	=> [
-				'files'		=> [],
-				'content'	=> []
+		self::TYPE_JS  => [
+			'gzip'      => FALSE,
+			'files'     => [],
+			'filters'   => [
+				'files'   => [],
+				'content' => []
 			],
-			'joinFiles'	=> TRUE,
+			'joinFiles' => TRUE,
 		],
-		'assets'			=> [],
-		'debugger'			=> '%debugMode%',
+		'assets'       => [],
+		'debugger'     => '%debugMode%',
 	];
 
 	/**
@@ -69,32 +73,32 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 	 *
 	 * @var array
 	 */
-	protected $defaultAsset = array(
-		self::TYPE_CSS => array(
-			'files'			=> [],
-			'filters'		=> [
-				'files'		=> [],
-				'content'	=> [],
+	private $defaultAsset = [
+		self::TYPE_CSS => [
+			'files'     => [],
+			'filters'   => [
+				'files'   => [],
+				'content' => [],
 			],
-			'joinFiles'		=> TRUE,
-		),
-		self::TYPE_JS => array(
-			'files'			=> [],
-			'filters'		=> [
-				'files'		=> [],
-				'content'	=> [],
+			'joinFiles' => TRUE,
+		],
+		self::TYPE_JS  => [
+			'files'     => [],
+			'filters'   => [
+				'files'   => [],
+				'content' => [],
 			],
-			'joinFiles'		=> TRUE
-		),
-		'packages' => []
-	);
+			'joinFiles' => TRUE
+		],
+		'packages'     => []
+	];
 
 	/**
 	 * @var array
 	 */
-	protected $assets = [];
+	private $assets = [];
 
-	public function loadConfiguration()
+	public function loadConfiguration() : void
 	{
 		$config = $this->getConfig($this->defaults);
 		$builder = $this->getContainerBuilder();
@@ -103,11 +107,12 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 
 		// Create web loader factory
 		$factory = $builder->addDefinition($this->prefix('factory'))
-			->setClass('IPub\AssetsLoader\LoaderFactory');
+			->setType(AssetsLoader\LoaderFactory::class);
 
 		// Create extensions route for assets
 		$builder->addDefinition($this->prefix('route.assets'))
-			->setClass('IPub\AssetsLoader\Application\Route', [$config['routes']['assets'], ['presenter' => 'IPub:AssetsLoader', 'action' => 'assets']])
+			->setType(Application\Route::class)
+			->setArguments([$config['routes']['assets'], ['presenter' => 'IPub:AssetsLoader', 'action' => 'assets']])
 			->setAutowired(FALSE)
 			->setInject(FALSE);
 
@@ -117,7 +122,8 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 
 		// Create extensions route for images
 		$builder->addDefinition($this->prefix('route.files'))
-			->setClass('IPub\AssetsLoader\Application\Route', [$config['routes']['files'], ['presenter' => 'IPub:AssetsLoader', 'action' => 'files']])
+			->setType(Application\Route::class)
+			->setArguments([$config['routes']['files'], ['presenter' => 'IPub:AssetsLoader', 'action' => 'files']])
 			->setAutowired(FALSE)
 			->setInject(FALSE);
 
@@ -128,17 +134,19 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 		// Update presenters mapping
 		$builder->getDefinition('nette.presenterFactory')
 			->addSetup('if (method_exists($service, ?)) { $service->setMapping([? => ?]); } '
-				.'elseif (property_exists($service, ?)) { $service->mapping[?] = ?; }',
+				. 'elseif (property_exists($service, ?)) { $service->mapping[?] = ?; }',
 				['setMapping', 'IPub', 'IPub\IPubModule\*\*Presenter', 'mapping', 'IPub', 'IPub\IPubModule\*\*Presenter']
 			);
 
 		// Create cache services
 		$builder->addDefinition($this->prefix('cache.assets'))
-			->setClass('IPub\AssetsLoader\Caching\AssetCache', ['@cacheStorage', 'IPub.AssetsLoader.Assets'])
+			->setType(Caching\AssetCache::class)
+			->setArguments(['@cacheStorage', 'IPub.AssetsLoader.Assets'])
 			->setInject(FALSE);
 
 		$builder->addDefinition($this->prefix('cache.files'))
-			->setClass('IPub\AssetsLoader\Caching\FileCache', ['@cacheStorage', 'IPub.AssetsLoader.Files'])
+			->setType(Caching\FileCache::class)
+			->setArguments(['@cacheStorage', 'IPub.AssetsLoader.Files'])
 			->setInject(FALSE);
 
 		// Collect all assets
@@ -168,8 +176,8 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 
 		// Create default asset
 		$defaultAsset = [
-			self::TYPE_CSS	=> $config[self::TYPE_CSS],
-			self::TYPE_JS	=> $config[self::TYPE_JS],
+			self::TYPE_CSS => $config[self::TYPE_CSS],
+			self::TYPE_JS  => $config[self::TYPE_JS],
 		];
 
 		// Check for packages
@@ -192,13 +200,16 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 		// Register diagnostic panel
 		if ($config['debugger'] && interface_exists('Tracy\IBarPanel')) {
 			$builder->addDefinition($this->prefix('panel'))
-				->setClass('IPub\AssetsLoader\Diagnostics\Panel');
+				->setType(Diagnostics\Panel::class);
 
-			$factory->addSetup('?->register(?)', array($this->prefix('@panel'), '@self'));
+			$factory->addSetup('?->register(?)', [$this->prefix('@panel'), '@self']);
 		}
 	}
 
-	public function beforeCompile()
+	/**
+	 * {@inheritdoc}
+	 */
+	public function beforeCompile() : void
 	{
 		$builder = $this->getContainerBuilder();
 
@@ -208,7 +219,7 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 		// Get all registered filters
 		foreach (array_keys($builder->findByTag(self::TAG_FILTER)) as $serviceName) {
 			// Register filter to factory
-			$factory->addSetup('registerFilter', ['@' .$serviceName, $serviceName]);
+			$factory->addSetup('registerFilter', ['@' . $serviceName, $serviceName]);
 		}
 
 		foreach ($this->compiler->getExtensions() as $extension) {
@@ -229,7 +240,7 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 				}
 			}
 
-			foreach($files as $assetName => $assetFiles) {
+			foreach ($files as $assetName => $assetFiles) {
 				if (isset($this->assets[$assetName])) {
 					foreach ([self::TYPE_CSS, self::TYPE_JS] as $type) {
 						if (isset($assetFiles[$type])) {
@@ -249,29 +260,29 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 			// Assets are splitted into types CSS/JS
 			foreach ([self::TYPE_CSS, self::TYPE_JS] as $type) {
 				$compiler = $builder->addDefinition($this->prefix($type . ucfirst($name) . 'Compiler'))
-					->setClass('IPub\AssetsLoader\Compilers\\' . ucfirst($type) . 'Compiler')
+					->setType('IPub\AssetsLoader\Compilers\\' . ucfirst($type) . 'Compiler')
 					->setArguments([$this->prefix('@cache.assets')]);
 
 				// Add content filters
 				foreach ($assetConfig[$type]['filters']['content'] as $filter) {
 					// Check if filter is defined as service name
 					if (substr($filter, 0, 1) != '@') {
-						$filter = $builder->getDefinition($this->prefix('assetsloader.filters.content.'. $filter));
+						$filter = $builder->getDefinition($this->prefix('assetsloader.filters.content.' . $filter));
 					}
 
 					// Add filter to compiler
-					$compiler->addSetup('addFilter', array($filter));
+					$compiler->addSetup('addFilter', [$filter]);
 				}
 
 				// Add files filters
 				foreach ($assetConfig[$type]['filters']['files'] as $filter) {
 					// Check if filter is defined as service name
 					if (substr($filter, 0, 1) != '@') {
-						$filter = $builder->getDefinition($this->prefix('assetsloader.filters.files.'. $filter));
+						$filter = $builder->getDefinition($this->prefix('assetsloader.filters.files.' . $filter));
 					}
 
 					// Add filter to compiler
-					$compiler->addSetup('addFilter', array($filter));
+					$compiler->addSetup('addFilter', [$filter]);
 				}
 			}
 		}
@@ -281,10 +292,10 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 			// Assets are splitted into types CSS/JS
 			foreach ([self::TYPE_CSS, self::TYPE_JS] as $type) {
 				// Create set name
-				$assetConfig[$type]['name'] = $name .'.'. $type;
+				$assetConfig[$type]['name'] = $name . '.' . $type;
 
 				// Register set to factory
-				$factory->addSetup('registerAsset', [$assetConfig[$type], $this->prefix('@'. $type . ucfirst($name) . 'Compiler')]);
+				$factory->addSetup('registerAsset', [$assetConfig[$type], $this->prefix('@' . $type . ucfirst($name) . 'Compiler')]);
 			}
 		}
 	}
@@ -292,7 +303,7 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 	/**
 	 * @param string $name
 	 */
-	private function loadConfig($name)
+	private function loadConfig(string $name) : void
 	{
 		$this->compiler->parseServices(
 			$this->getContainerBuilder(),
@@ -304,11 +315,13 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 	/**
 	 * @param Nette\Configurator $config
 	 * @param string $extensionName
+	 *
+	 * @return void
 	 */
-	public static function register(Nette\Configurator $config, $extensionName = 'assetsLoader')
+	public static function register(Nette\Configurator $config, string $extensionName = 'assetsLoader') : void
 	{
 		$config->onCompile[] = function (Nette\Configurator $config, Nette\DI\Compiler $compiler) use ($extensionName) {
-			$compiler->addExtension($extensionName, new AssetsLoaderExtension());
+			$compiler->addExtension($extensionName, new AssetsLoaderExtension);
 		};
 	}
 }

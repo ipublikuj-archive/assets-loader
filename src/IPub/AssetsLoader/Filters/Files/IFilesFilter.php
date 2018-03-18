@@ -2,30 +2,30 @@
 /**
  * IFilesFilter.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Filters
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Filters
+ * @since          1.0.0
  *
- * @date		29.12.13
+ * @date           29.12.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Filters\Files;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Compilers;
 
 interface IFilesFilter
 {
 	/**
-	 * @param $code
+	 * @param string $code
 	 * @param Compilers\Compiler $compiler
-	 * @param $file
+	 * @param string $file
 	 *
 	 * @return string
 	 */
-	public function __invoke($code, Compilers\Compiler $compiler, $file);
+	public function __invoke(string $code, Compilers\Compiler $compiler, string $file) : string;
 }

@@ -2,15 +2,17 @@
 /**
  * JsLoader.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Components
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Components
+ * @since          1.0.0
  *
- * @date		08.06.13
+ * @date           08.06.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Components;
 
@@ -35,7 +37,7 @@ class JsLoader extends AssetsLoader
 	 *
 	 * @return Utils\Html
 	 */
-	public function getElement($source)
+	public function getElement($source) : Utils\Html
 	{
 		return Utils\Html::el('script')
 			->type($this->contentType)
@@ -45,7 +47,7 @@ class JsLoader extends AssetsLoader
 	/**
 	 * @return void
 	 */
-	public function renderFiles()
+	public function renderFiles() : void
 	{
 		// Remote files
 		foreach ($this->files->getRemoteFiles() as $file) {
@@ -59,9 +61,9 @@ class JsLoader extends AssetsLoader
 
 			echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'js', 'id' => $result->hash, 'timestamp' => $result->lastModified])), PHP_EOL;
 
-		// Leave files splitted
+			// Leave files splitted
 		} else {
-			foreach($this->files as $file) {
+			foreach ($this->files as $file) {
 				// Compile single file
 				$result = $this->compiler->generate([$file], $this->contentType);
 
@@ -77,7 +79,7 @@ class JsLoader extends AssetsLoader
 	 *
 	 * @throws Exceptions\InvalidStateException
 	 */
-	public function getLink()
+	public function getLink() : string
 	{
 		$hasArgs = func_num_args() > 0;
 

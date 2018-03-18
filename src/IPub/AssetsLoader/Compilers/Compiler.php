@@ -2,22 +2,23 @@
 /**
  * Compiler.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Compilers
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Compilers
+ * @since          1.0.0
  *
- * @date		29.12.13
+ * @date           29.12.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Compilers;
 
 use Nette;
 use Nette\Utils;
 
-use IPub;
 use IPub\AssetsLoader;
 use IPub\AssetsLoader\Caching;
 use IPub\AssetsLoader\Diagnostics;
@@ -26,13 +27,18 @@ use IPub\AssetsLoader\Exceptions;
 use IPub\AssetsLoader\Files;
 use IPub\AssetsLoader\Filters;
 
-abstract class Compiler extends Nette\Object
+abstract class Compiler
 {
+	/**
+	 * Implement nette smart magic
+	 */
+	use Nette\SmartObject;
+
 	/**
 	 * Define compilers types
 	 */
-	const TYPE_CSS	= 'css';
-	const TYPE_JS	= 'js';
+	protected const TYPE_CSS = 'css';
+	protected const TYPE_JS = 'js';
 
 	/**
 	 * @var Filters\Content\IContentFilter[]
@@ -67,43 +73,39 @@ abstract class Compiler extends Nette\Object
 	/**
 	 * @param Filters\IFilter $filter
 	 *
-	 * @return $this
+	 * @return void
 	 *
 	 * @throws Exceptions\InvalidArgumentException
 	 */
-	public function addFilter(Filters\IFilter $filter)
+	public function addFilter(Filters\IFilter $filter) : void
 	{
 		// Filter is content type filter
 		if ($filter instanceof Filters\Content\IContentFilter) {
 			$this->contentFilters[] = $filter;
 
-		// Filter is file type filter
+			// Filter is file type filter
 		} else if ($filter instanceof Filters\Files\IFilesFilter) {
 			$this->fileFilters[] = $filter;
 
 		} else {
 			throw new Exceptions\InvalidArgumentException('Unknown filter.');
 		}
-
-		return $this;
 	}
 
 	/**
 	 * @param Filters\Content\IContentFilter $filter
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function addContentFilter(Filters\Content\IContentFilter $filter)
+	public function addContentFilter(Filters\Content\IContentFilter $filter) : void
 	{
 		$this->contentFilters[] = $filter;
-
-		return $this;
 	}
 
 	/**
 	 * @return array
 	 */
-	public function getContentFilters()
+	public function getContentFilters() : array
 	{
 		return $this->contentFilters;
 	}
@@ -111,19 +113,17 @@ abstract class Compiler extends Nette\Object
 	/**
 	 * @param Filters\Files\IFilesFilter $filter
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function addFilesFilter(Filters\Files\IFilesFilter $filter)
+	public function addFilesFilter(Filters\Files\IFilesFilter $filter) : void
 	{
 		$this->fileFilters[] = $filter;
-
-		return $this;
 	}
 
 	/**
 	 * @return array
 	 */
-	public function getFilesFilters()
+	public function getFilesFilters() : array
 	{
 		return $this->fileFilters;
 	}
@@ -136,11 +136,11 @@ abstract class Compiler extends Nette\Object
 	 *
 	 * @return Utils\ArrayHash
 	 */
-	public function generate(array $files, $contentType)
+	public function generate(array $files, string $contentType) : Utils\ArrayHash
 	{
 		// Init vars
-		$name	= $this->getFilename($files);
-		$hash	= $this->getHash($files);
+		$name = $this->getFilename($files);
+		$hash = $this->getHash($files);
 		$lastModified = $this->getLastModified($files);
 
 		if ($this->cache->load($hash) === NULL) {
@@ -155,21 +155,21 @@ abstract class Compiler extends Nette\Object
 			$this->cache->save(
 				$hash,
 				[
-					Caching\AssetCache::CONTENT_TYPE	=> $contentType,
-					Caching\AssetCache::CONTENT			=> $content
+					Caching\AssetCache::CONTENT_TYPE => $contentType,
+					Caching\AssetCache::CONTENT      => $content
 				],
 				[
-					Caching\AssetCache::TAGS	=> ['ipub.assetsloader', 'ipub.assetsloader.assets'],
-					Caching\AssetCache::FILES	=> array_keys($files)
+					Caching\AssetCache::TAGS  => ['ipub.assetsloader', 'ipub.assetsloader.assets'],
+					Caching\AssetCache::FILES => array_keys($files)
 				]
 			);
 		}
 
 		return Utils\ArrayHash::from([
-			'file'			=> $name,
-			'hash'			=> $hash,
-			'lastModified'	=> $lastModified,
-			'sourceFiles'	=> $files,
+			'file'         => $name,
+			'hash'         => $hash,
+			'lastModified' => $lastModified,
+			'sourceFiles'  => $files,
 		]);
 	}
 
@@ -180,7 +180,7 @@ abstract class Compiler extends Nette\Object
 	 *
 	 * @return int
 	 */
-	protected function getLastModified(array $files)
+	protected function getLastModified(array $files) : int
 	{
 		$modified = 0;
 
@@ -198,7 +198,7 @@ abstract class Compiler extends Nette\Object
 	 *
 	 * @return string
 	 */
-	protected function getFilename(array $files)
+	protected function getFilename(array $files) : string
 	{
 		$name = $this->getHash($files);
 
@@ -217,7 +217,7 @@ abstract class Compiler extends Nette\Object
 	 *
 	 * @return string
 	 */
-	protected function getHash(array $files)
+	protected function getHash(array $files) : string
 	{
 		$tmp = [];
 
@@ -235,7 +235,7 @@ abstract class Compiler extends Nette\Object
 	 *
 	 * @return string
 	 */
-	protected function loadFile($file)
+	protected function loadFile(string $file) : string
 	{
 		$content = file_get_contents($file->getPath());
 
@@ -253,7 +253,7 @@ abstract class Compiler extends Nette\Object
 	 *
 	 * @return string
 	 */
-	protected function getContent(array $files)
+	protected function getContent(array $files) : string
 	{
 		// Load content
 		$content = '';

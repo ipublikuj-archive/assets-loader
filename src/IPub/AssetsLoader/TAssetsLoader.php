@@ -2,22 +2,19 @@
 /**
  * TAssetsLoader.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	common
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     common
+ * @since          1.0.0
  *
- * @date		27.01.15
+ * @date           27.01.15
  */
 
+declare(strict_types = 1);
+
 namespace IPub\AssetsLoader;
-
-use Nette;
-use Nette\Application;
-
-use IPub;
 
 trait TAssetsLoader
 {
@@ -29,7 +26,8 @@ trait TAssetsLoader
 	/**
 	 * @param LoaderFactory $assetsLoader
 	 */
-	public function injectAssetsLoader(LoaderFactory $assetsLoader) {
+	public function injectAssetsLoader(LoaderFactory $assetsLoader) : void
+	{
 		$this->assetsLoader = $assetsLoader;
 	}
 }

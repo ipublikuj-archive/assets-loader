@@ -4,20 +4,20 @@
  *
  * Fix position of @import statment in CSS files
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Filters
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Filters
+ * @since          1.0.0
  *
- * @date		31.12.13
+ * @date           31.12.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Filters\Content;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Compilers;
 use IPub\AssetsLoader\Filters;
 
@@ -31,7 +31,7 @@ class CssImportFilter implements IContentFilter, Filters\IFilter
 	 *
 	 * @return string
 	 */
-	public function __invoke($code, Compilers\Compiler $compiler)
+	public function __invoke(string $code, Compilers\Compiler $compiler) : string
 	{
 		// move @import rules to the top
 		$regexp = '/@import[^;]+;/i';

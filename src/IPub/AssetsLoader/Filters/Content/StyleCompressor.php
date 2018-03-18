@@ -5,20 +5,20 @@
  * Stylesheet compressor helper class, minifies css
  * Based on Minify_CSS_Compressor (http://code.google.com/p/minify/, Stephen Clay <steve@mrclay.org>, New BSD License)
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Filters
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Filters
+ * @since          1.0.0
  *
- * @date		08.06.13
+ * @date           08.06.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Filters\Content;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Compilers;
 use IPub\AssetsLoader\Filters;
 
@@ -29,7 +29,7 @@ class StyleCompressor implements IContentFilter, Filters\IFilter
 	 *
 	 * I.e. are some browsers targetted until the next comment?
 	 */
-	protected $_inHack = FALSE;
+	private $_inHack = FALSE;
 
 	/**
 	 * Minify a CSS string
@@ -39,7 +39,7 @@ class StyleCompressor implements IContentFilter, Filters\IFilter
 	 *
 	 * @return string
 	 */
-	public function __invoke($code, Compilers\Compiler $compiler)
+	public function __invoke(string $code, Compilers\Compiler $compiler) : string
 	{
 		$code = str_replace("\r\n", "\n", $code);
 
@@ -53,7 +53,7 @@ class StyleCompressor implements IContentFilter, Filters\IFilter
 		$code = preg_replace('@:\\s*/\\*\\s*\\*/@', ':/*keep*/', $code);
 
 		// apply callback to all valid comments (and strip out surrounding ws
-		$code = preg_replace_callback('@\\s*/\\*([\\s\\S]*?)\\*/\\s*@', array($this, '_commentCB'), $code);
+		$code = preg_replace_callback('@\\s*/\\*([\\s\\S]*?)\\*/\\s*@', [$this, 'commentCB'], $code);
 
 		// remove ws around { } and last semicolon in declaration block
 		$code = preg_replace('/\\s*{\\s*/', '{', $code);
@@ -95,13 +95,13 @@ class StyleCompressor implements IContentFilter, Filters\IFilter
 				[^~>+,\\s]+      # selector part
 				{                # open declaration block
 			/x'
-			,array($this, '_selectorsCB'), $code);
+			, [$this, 'selectorsCB'], $code);
 
 		// minimize hex colors
 		$code = preg_replace('/([^=])#([a-f\\d])\\2([a-f\\d])\\3([a-f\\d])\\4([\\s;\\}])/i', '$1#$2$3$4$5', $code);
 
 		// remove spaces between font families
-		$code = preg_replace_callback('/font-family:([^;}]+)([;}])/', array($this, '_fontFamilyCB'), $code);
+		$code = preg_replace_callback('/font-family:([^;}]+)([;}])/', [$this, 'fontFamilyCB'], $code);
 
 		$code = preg_replace('/@import\\s+url/', '@import url', $code);
 
@@ -116,7 +116,7 @@ class StyleCompressor implements IContentFilter, Filters\IFilter
 			((?:padding|margin|border|outline):\\d+(?:px|em)?) # 1 = prop : 1st numeric value
 			\\s+
 			/x'
-			,"$1\n", $code);
+			, "$1\n", $code);
 
 		// prevent triggering IE6 bug: http://www.crankygeek.com/ie6pebug/
 		$code = preg_replace('/:first-l(etter|ine)\\{/', ':first-l$1 {', $code);
@@ -131,7 +131,7 @@ class StyleCompressor implements IContentFilter, Filters\IFilter
 	 *
 	 * @return string
 	 */
-	protected function _selectorsCB($m)
+	private function selectorsCB(array $m) : string
 	{
 		// remove ws around the combinators
 		return preg_replace('/\\s*([,>+~])\\s*/', '$1', $m[0]);
@@ -144,7 +144,7 @@ class StyleCompressor implements IContentFilter, Filters\IFilter
 	 *
 	 * @return string
 	 */
-	protected function _commentCB($m)
+	protected function commentCB(array $m) : string
 	{
 		$hasSurroundingWs = (trim($m[0]) !== $m[1]);
 		$m = $m[1];
@@ -176,6 +176,7 @@ class StyleCompressor implements IContentFilter, Filters\IFilter
 				@x', $m, $n)) {
 				// end hack mode after this comment, but preserve the hack and comment content
 				$this->_inHack = FALSE;
+
 				return "/*/{$n[1]}/**/";
 			}
 		}
@@ -183,18 +184,21 @@ class StyleCompressor implements IContentFilter, Filters\IFilter
 		if (substr($m, -1) === '\\') { // comment ends like \*/
 			// begin hack mode and preserve hack
 			$this->_inHack = TRUE;
+
 			return '/*\\*/';
 		}
 
 		if ($m !== '' && $m[0] === '/') { // comment looks like /*/ foo */
 			// begin hack mode and preserve hack
 			$this->_inHack = TRUE;
+
 			return '/*/*/';
 		}
 
 		if ($this->_inHack) {
 			// a regular comment ends hack mode but should be preserved
 			$this->_inHack = FALSE;
+
 			return '/**/';
 		}
 
@@ -212,7 +216,7 @@ class StyleCompressor implements IContentFilter, Filters\IFilter
 	 *
 	 * @return string
 	 */
-	protected function _fontFamilyCB($m)
+	private function fontFamilyCB(array $m) : string
 	{
 		$m[1] = preg_replace('/
 				\\s*

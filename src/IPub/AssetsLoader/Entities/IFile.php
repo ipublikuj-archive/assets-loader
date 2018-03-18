@@ -2,55 +2,53 @@
 /**
  * IFile.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Entities
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Entities
+ * @since          1.0.0
  *
- * @date		23.01.15
+ * @date           23.01.15
  */
 
-namespace IPub\AssetsLoader\Entities;
+declare(strict_types = 1);
 
-use IPub;
-use IPub\AssetsLoader;
-use IPub\AssetsLoader\Exceptions;
+namespace IPub\AssetsLoader\Entities;
 
 interface IFile
 {
 	/**
 	 * @return string
 	 */
-	public function getFilename();
+	public function getFilename() : string;
 
 	/**
 	 * @param string $path
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function setPath($path);
+	public function setPath(string $path) : void;
 
 	/**
 	 * @return string
 	 */
-	public function getPath();
+	public function getPath() : string;
 
 	/**
 	 * @return string
 	 */
-	public function getMimetype();
+	public function getMimetype() : string;
 
 	/**
 	 * @param mixed $attribute
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function setAttribute($attribute);
+	public function setAttribute(string $attribute) : void;
 
 	/**
-	 * @return mixed
+	 * @return string|NULL
 	 */
-	public function getAttribute();
+	public function getAttribute() : ?string;
 }

@@ -2,15 +2,17 @@
 /**
  * CoffeeScriptFilter.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Filters
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Filters
+ * @since          1.0.0
  *
- * @date		29.12.13
+ * @date           29.12.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Filters\Files;
 
@@ -21,7 +23,7 @@ use IPub\AssetsLoader\Compilers;
 /**
  * Coffee script filter
  *
- * @author Patrik Votoček
+ * @author  Patrik Votoček
  * @license MIT
  */
 class CoffeeScriptFilter extends FilesFilter
@@ -29,12 +31,12 @@ class CoffeeScriptFilter extends FilesFilter
 	/**
 	 * @var path to coffee bin
 	 */
-	protected $bin;
+	private $bin;
 
 	/**
 	 * @var bool
 	 */
-	protected $bare = FALSE;
+	private $bare = FALSE;
 
 	/**
 	 * @param string
@@ -53,7 +55,7 @@ class CoffeeScriptFilter extends FilesFilter
 	 *
 	 * @return string
 	 */
-	public function __invoke($code, Compilers\Compiler $compiler, $file)
+	public function __invoke(string $code, Compilers\Compiler $compiler, string $file) : string
 	{
 		if (pathinfo($file, PATHINFO_EXTENSION) === 'coffee') {
 			$code = $this->compileCoffee($code);
@@ -70,9 +72,9 @@ class CoffeeScriptFilter extends FilesFilter
 	 *
 	 * @return string
 	 */
-	protected function compileCoffee($source, $bare = NULL)
+	private function compileCoffee(string $source, ?bool $bare = NULL) : string
 	{
-		if (is_NULL($bare)) {
+		if ($bare === NULL) {
 			$bare = $this->bare;
 		}
 

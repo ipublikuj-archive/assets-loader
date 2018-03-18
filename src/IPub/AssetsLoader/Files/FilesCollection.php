@@ -2,15 +2,17 @@
 /**
  * FilesCollection.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Files
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Files
+ * @since          1.0.0
  *
- * @date		29.12.13
+ * @date           29.12.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Files;
 
@@ -42,7 +44,7 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate, \ArrayAcc
 	/**
 	 * @param string|NULL $root files root for relative paths
 	 */
-	public function __construct($root = NULL)
+	public function __construct(?string $root = NULL)
 	{
 		$this->root = $root;
 	}
@@ -50,20 +52,18 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate, \ArrayAcc
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setFiles($files)
+	public function setFiles($files) : void
 	{
 		// Clear files collection
 		$this->clear();
 		// Add new files
 		$this->addFiles($files);
-
-		return $this;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function addFiles($files)
+	public function addFiles($files) : void
 	{
 		foreach ($files as $key => $file) {
 			// Finder support
@@ -85,7 +85,7 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate, \ArrayAcc
 					$this->addFile($foundFile);
 				}
 
-			// Normal files
+				// Normal files
 			} else {
 				$attribute = NULL;
 
@@ -105,20 +105,18 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate, \ArrayAcc
 				if (Utils\Strings::startsWith($file, 'http://') || Utils\Strings::startsWith($file, 'https://')) {
 					$this->addRemoteFile($file, $attribute);
 
-				// Local file detected
+					// Local file detected
 				} else {
 					$this->addFile($file, $attribute);
 				}
 			}
 		}
-
-		return $this;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getFiles()
+	public function getFiles() : array
 	{
 		return $this->files;
 	}
@@ -126,7 +124,7 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate, \ArrayAcc
 	/**
 	 * {@inheritdoc}
 	 */
-	public function addFile($file, $attribute = NULL)
+	public function addFile($file, ?string $attribute = NULL) : void
 	{
 		// Check for entity
 		if (!$file instanceof Entities\IFile) {
@@ -136,48 +134,40 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate, \ArrayAcc
 
 		// Add entity to collection
 		$this->files[(string) $file] = $file;
-
-		return $this;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function removeFile($file)
+	public function removeFile(string $file) : void
 	{
 		$this->removeFiles([$file]);
-
-		return $this;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function removeFiles(array $files)
+	public function removeFiles(array $files) : void
 	{
-		foreach($files as $file) {
+		foreach ($files as $file) {
 			unset($this->files[(string) $file]);
 		}
-
-		return $this;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setRemoteFiles($files)
+	public function setRemoteFiles($files) : void
 	{
 		foreach ($files as $file) {
 			$this->addRemoteFile($file);
 		}
-
-		return $this;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getRemoteFiles()
+	public function getRemoteFiles() : array
 	{
 		return $this->remoteFiles;
 	}
@@ -185,32 +175,28 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate, \ArrayAcc
 	/**
 	 * {@inheritdoc}
 	 */
-	public function addRemoteFile($file)
+	public function addRemoteFile(string $file) : void
 	{
 		if (in_array($file, $this->remoteFiles)) {
 			return;
 		}
 
 		$this->remoteFiles[] = $file;
-
-		return $this;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function clear()
+	public function clear() : void
 	{
-		$this->files		= [];
-		$this->remoteFiles	= [];
-
-		return $this;
+		$this->files = [];
+		$this->remoteFiles = [];
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getRoot()
+	public function getRoot() : string
 	{
 		return $this->root;
 	}

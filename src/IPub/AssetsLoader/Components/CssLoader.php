@@ -2,22 +2,23 @@
 /**
  * CssLoader.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Components
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Components
+ * @since          1.0.0
  *
- * @date		08.06.13
+ * @date           08.06.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Components;
 
 use Nette;
 use Nette\Utils;
 
-use IPub;
 use IPub\AssetsLoader\Exceptions;
 use IPub\AssetsLoader\Files;
 
@@ -43,13 +44,11 @@ class CssLoader extends AssetsLoader
 	 *
 	 * @param string $title
 	 *
-	 * @return CssLoader
+	 * @return void
 	 */
-	public function setTitle($title)
+	public function setTitle(string $title) : void
 	{
 		$this->title = $title;
-
-		return $this;
 	}
 
 	/**
@@ -57,7 +56,7 @@ class CssLoader extends AssetsLoader
 	 *
 	 * @return string
 	 */
-	public function getTitle()
+	public function getTitle() : string
 	{
 		return $this->title;
 	}
@@ -67,13 +66,11 @@ class CssLoader extends AssetsLoader
 	 *
 	 * @param bool $alternate
 	 *
-	 * @return CssLoader
+	 * @return void
 	 */
-	public function setAlternate($alternate)
+	public function setAlternate($alternate) : void
 	{
 		$this->alternate = $alternate;
-
-		return $this;
 	}
 
 	/**
@@ -81,7 +78,7 @@ class CssLoader extends AssetsLoader
 	 *
 	 * @return bool
 	 */
-	public function isAlternate()
+	public function isAlternate() : bool
 	{
 		return $this->alternate;
 	}
@@ -94,10 +91,10 @@ class CssLoader extends AssetsLoader
 	 *
 	 * @return Utils\Html
 	 */
-	public function getElement($source, $media = NULL)
+	public function getElement(string $source, string $media = NULL) : Utils\Html
 	{
 		return Utils\Html::el('link')
-			->rel('stylesheet'. ($this->isAlternate() ? ' alternate' : ''))
+			->rel('stylesheet' . ($this->isAlternate() ? ' alternate' : ''))
 			->type($this->contentType)
 			->title($this->title)
 			->media(!trim($media) ? 'all' : $media)
@@ -107,7 +104,7 @@ class CssLoader extends AssetsLoader
 	/**
 	 * @return void
 	 */
-	public function renderFiles()
+	public function renderFiles() : void
 	{
 		// Remote files
 		foreach ($this->files->getRemoteFiles() as $file) {
@@ -128,7 +125,7 @@ class CssLoader extends AssetsLoader
 
 				echo $this->getElement($this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified]), $media), PHP_EOL;
 
-			// Leave files splitted
+				// Leave files splitted
 			} else {
 				foreach ($files as $file) {
 					// Compile single file
@@ -147,7 +144,7 @@ class CssLoader extends AssetsLoader
 	 *
 	 * @throws Exceptions\InvalidStateException
 	 */
-	public function getLink()
+	public function getLink() : string
 	{
 		$hasArgs = func_num_args() > 0;
 
@@ -175,7 +172,7 @@ class CssLoader extends AssetsLoader
 			$filesByMedia[$file->getAttribute()][(string) $file] = $file;
 		}
 
-		if (count($filesByMedia)>1) {
+		if (count($filesByMedia) > 1) {
 			throw new Exceptions\InvalidStateException("Can't generate link for combined media.");
 		}
 

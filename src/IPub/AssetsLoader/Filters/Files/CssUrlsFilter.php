@@ -4,15 +4,17 @@
  *
  * Absolutize urls in CSS
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Filters
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Filters
+ * @since          1.0.0
  *
- * @date		29.12.13
+ * @date           29.12.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Filters\Files;
 
@@ -32,17 +34,17 @@ class CssUrlsFilter extends FilesFilter
 	 *
 	 * @var string
 	 */
-	protected $basePath;
+	private $basePath;
 
 	/**
 	 * @var Caching\FileCache
 	 */
-	protected $cache;
+	private $cache;
 
 	/**
 	 * @var Application\Application
 	 */
-	protected $application;
+	private $application;
 
 	/**
 	 * Filter constructor
@@ -65,12 +67,11 @@ class CssUrlsFilter extends FilesFilter
 	 *
 	 * @return string
 	 */
-	public function __invoke($code, Compilers\Compiler $compiler, $file)
+	public function __invoke(string $code, Compilers\Compiler $compiler, string $file) : string
 	{
 		$self = $this;
 
-		return preg_replace_callback('/url\([\'"]?(?![a-z]+:|\/+)([^\'")]+)[\'"]?\)/i', function ($matches) use ($self, $file)
-		{
+		return preg_replace_callback('/url\([\'"]?(?![a-z]+:|\/+)([^\'")]+)[\'"]?\)/i', function ($matches) use ($self, $file) {
 			return "url('" . $self->absolutizeUrl($matches[1], $file) . "')";
 		}, $code);
 	}
@@ -78,12 +79,12 @@ class CssUrlsFilter extends FilesFilter
 	/**
 	 * Make relative url absolute
 	 *
-	 * @param string $url image url
+	 * @param string $url     image url
 	 * @param string $cssFile absolute css file path
 	 *
 	 * @return string
 	 */
-	public function absolutizeUrl($url, $cssFile)
+	public function absolutizeUrl(string $url, string $cssFile) : string
 	{
 		// Is already absolute
 		if (preg_match('/^([a-z]+:\/)?\//', $url)) {
@@ -97,7 +98,7 @@ class CssUrlsFilter extends FilesFilter
 		$url = preg_replace('/\?.*/', '', $url);
 
 		// Create full file path
-		$filePath = realpath(rtrim(dirname(realpath($cssFile)), '/') .'/'. $url);
+		$filePath = realpath(rtrim(dirname(realpath($cssFile)), '/') . '/' . $url);
 
 		// Check if file exists
 		if (!$filePath || !file_exists($filePath)) {
@@ -117,11 +118,11 @@ class CssUrlsFilter extends FilesFilter
 			$this->cache->save(
 				$fileHash,
 				[
-					Caching\FileCache::CONTENT	=> $filePath
+					Caching\FileCache::CONTENT => $filePath
 				],
 				[
-					Caching\FileCache::TAGS		=> ['ipub.assetsloader', 'ipub.assetsloader.images'],
-					Caching\FileCache::FILES	=> [$filePath]
+					Caching\FileCache::TAGS  => ['ipub.assetsloader', 'ipub.assetsloader.images'],
+					Caching\FileCache::FILES => [$filePath]
 				]
 			);
 
@@ -135,17 +136,17 @@ class CssUrlsFilter extends FilesFilter
 	/**
 	 * @return Application\IPresenter
 	 */
-	protected function getPresenter()
+	private function getPresenter() : Application\IPresenter
 	{
 		return $this->application->getPresenter();
 	}
 
 	/**
-	 * @param $file
+	 * @param string $file
 	 *
 	 * @return string
 	 */
-	protected function getHash($file)
+	private function getHash(string $file) : string
 	{
 		$tmp = $file . filesize($file);
 

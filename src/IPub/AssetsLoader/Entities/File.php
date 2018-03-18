@@ -2,15 +2,17 @@
 /**
  * File.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Entities
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Entities
+ * @since          1.0.0
  *
- * @date		23.01.15
+ * @date           23.01.15
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Entities;
 
@@ -22,8 +24,13 @@ use IPub\AssetsLoader\Exceptions;
 use IPub\AssetsLoader\Files;
 use IPub\AssetsLoader\Filters;
 
-class File extends Nette\Object implements IFile
+class File implements IFile
 {
+	/**
+	 * Implement nette smart magic
+	 */
+	use Nette\SmartObject;
+
 	/**
 	 * @var string
 	 */
@@ -46,21 +53,21 @@ class File extends Nette\Object implements IFile
 
 	/**
 	 * @param string $path
-	 * @param string|null $attribute
+	 * @param string|NULL $attribute
 	 */
-	public function __construct($path, $attribute = NULL)
+	public function __construct(string $path, ?string $attribute = NULL)
 	{
 		// Parse file path into info pats
 		$this->setPath($path);
 
 		// File attributes
-		$this->attribute	= $attribute;
+		$this->attribute = $attribute;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getFilename()
+	public function getFilename() : string
 	{
 		return $this->filename;
 	}
@@ -68,22 +75,20 @@ class File extends Nette\Object implements IFile
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setPath($path)
+	public function setPath(string $path) : void
 	{
 		// Create full path
 		$path = $this->cannonicalizePath($path);
 
-		$this->path		= $path;
-		$this->filename	= basename($path);
-		$this->mimetype	= Files\MimeMapper::getMimeFromFilename($this->filename);
-
-		return $this;
+		$this->path = $path;
+		$this->filename = basename($path);
+		$this->mimetype = Files\MimeMapper::getMimeFromFilename($this->filename);
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getPath()
+	public function getPath() : string
 	{
 		return $this->path;
 	}
@@ -91,7 +96,7 @@ class File extends Nette\Object implements IFile
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getMimetype()
+	public function getMimetype() : string
 	{
 		return $this->mimetype;
 	}
@@ -99,17 +104,15 @@ class File extends Nette\Object implements IFile
 	/**
 	 * {@inheritdoc}
 	 */
-	public function setAttribute($attribute)
+	public function setAttribute(string $attribute) : void
 	{
 		$this->attribute = $attribute;
-
-		return $this;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getAttribute()
+	public function getAttribute() : ?string
 	{
 		return $this->attribute;
 	}
@@ -117,7 +120,7 @@ class File extends Nette\Object implements IFile
 	/**
 	 * @return int
 	 */
-	public function getFileSize()
+	public function getFileSize() : int
 	{
 		return filesize($this->path);
 	}
@@ -133,13 +136,13 @@ class File extends Nette\Object implements IFile
 	/**
 	 * Make path absolute
 	 *
-	 * @param $path string
+	 * @param string $path
 	 *
 	 * @return string
 	 *
 	 * @throws Exceptions\FileNotFoundException
 	 */
-	protected function cannonicalizePath($path)
+	private function cannonicalizePath(string $path) : string
 	{
 		if (file_exists($path)) {
 			return $path;

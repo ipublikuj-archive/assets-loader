@@ -2,23 +2,22 @@
 /**
  * Asset.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Entities
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Entities
+ * @since          1.0.0
  *
- * @date		16.01.15
+ * @date           16.01.15
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Entities;
 
-use Nette;
 use Nette\Utils;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Files;
 use IPub\AssetsLoader\Filters;
 
@@ -27,59 +26,55 @@ interface IAsset
 	/**
 	 * @param string $name
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function setName($name);
+	public function setName($name) : void;
 
 	/**
 	 * @return string
 	 */
-	public function getName();
+	public function getName() : string;
 
 	/**
 	 * @param array $files
 	 *
-	 * @return $this
-	 *
-	 * @throw Exceptions\FileNotFoundException
+	 * @return void
 	 */
-	public function setFiles(array $files);
+	public function setFiles(array $files) : void;
 
 	/**
 	 * @param string $file
 	 *
-	 * @return $this
-	 *
-	 * @throw Exceptions\FileNotFoundException
+	 * @return void
 	 */
-	public function addFile($file);
+	public function addFile($file) : void;
 
 	/**
 	 * @return Files\IFilesCollection
 	 */
-	public function getFiles();
+	public function getFiles() : Files\IFilesCollection;
 
 	/**
 	 * @param bool $joinFiles
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function setJoinFiles($joinFiles);
+	public function setJoinFiles(bool $joinFiles) : void;
 
 	/**
 	 * @return bool
 	 */
-	public function getJoinFiles();
+	public function getJoinFiles() : bool;
 
 	/**
 	 * @param bool $gzip
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function setGzip($gzip);
+	public function setGzip(bool $gzip) : void;
 
 	/**
 	 * @return bool
 	 */
-	public function getGzip();
+	public function getGzip() : bool;
 }

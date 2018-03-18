@@ -2,25 +2,29 @@
 /**
  * IContentFilter.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Filters
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Filters
+ * @since          1.0.0
  *
- * @date		30.12.13
+ * @date           30.12.13
  */
 
+declare(strict_types = 1);
+
 namespace IPub\AssetsLoader\Filters\Content;
+
+use IPub\AssetsLoader\Compilers;
 
 interface IContentFilter
 {
 	/**
-	 * @param $code
-	 * @param \IPub\AssetsLoader\Compilers\Compiler $loader
+	 * @param string $code
+	 * @param Compilers\Compiler $loader
 	 *
 	 * @return string
 	 */
-	public function __invoke($code, \IPub\AssetsLoader\Compilers\Compiler $loader);
+	public function __invoke(string $code, Compilers\Compiler $loader) : string;
 }

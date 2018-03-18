@@ -2,15 +2,17 @@
 /**
  * Presenter.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Application
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Application
+ * @since          1.0.0
  *
- * @date		15.01.15
+ * @date           15.01.15
  */
+
+declare(strict_types = 1);
 
 namespace IPub\IPubModule;
 
@@ -23,8 +25,13 @@ use IPub;
 use IPub\AssetsLoader;
 use IPub\AssetsLoader\Caching;
 
-class AssetsLoaderPresenter extends Nette\Object implements Application\IPresenter
+class AssetsLoaderPresenter implements Application\IPresenter
 {
+	/**
+	 * Implement nette smart magic
+	 */
+	use Nette\SmartObject;
+
 	/**
 	 * @var Http\IRequest
 	 */
@@ -62,10 +69,10 @@ class AssetsLoaderPresenter extends Nette\Object implements Application\IPresent
 		Caching\AssetCache $assetCache,
 		Caching\FileCache $fileCache
 	) {
-		$this->httpRequest	= $httpRequest;
-		$this->router		= $router;
-		$this->assetCache	= $assetCache;
-		$this->fileCache	= $fileCache;
+		$this->httpRequest = $httpRequest;
+		$this->router = $router;
+		$this->assetCache = $assetCache;
+		$this->fileCache = $fileCache;
 	}
 
 	/**
@@ -75,7 +82,7 @@ class AssetsLoaderPresenter extends Nette\Object implements Application\IPresent
 	 */
 	public function actionAssets($id)
 	{
-		if (NULL === ($item = $this->assetCache->getItem(Utils\Strings::webalize($id)))) {
+		if (($item = $this->assetCache->getItem(Utils\Strings::webalize($id))) === NULL) {
 			return new Application\Responses\TextResponse('');
 		}
 
@@ -89,7 +96,7 @@ class AssetsLoaderPresenter extends Nette\Object implements Application\IPresent
 	 */
 	public function actionFiles($id)
 	{
-		if (NULL === ($item = $this->fileCache->getItem(Utils\Strings::webalize($id)))) {
+		if (($item = $this->fileCache->getItem(Utils\Strings::webalize($id))) === NULL) {
 			return new Application\Responses\TextResponse('');
 		}
 
@@ -103,7 +110,7 @@ class AssetsLoaderPresenter extends Nette\Object implements Application\IPresent
 	 *
 	 * @throws Application\BadRequestException
 	 */
-	public function run(Application\Request $request)
+	public function run(Application\Request $request) : Application\IResponse
 	{
 		$this->request = $request;
 
@@ -143,7 +150,7 @@ class AssetsLoaderPresenter extends Nette\Object implements Application\IPresent
 	 *
 	 * @return bool  does method exist?
 	 */
-	protected function tryCall($method, array $params)
+	protected function tryCall($method, array $params) : bool
 	{
 		$rc = $this->getReflection();
 

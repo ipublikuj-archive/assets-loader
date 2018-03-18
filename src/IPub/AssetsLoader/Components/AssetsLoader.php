@@ -2,22 +2,23 @@
 /**
  * AssetsLoader.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Components
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Components
+ * @since          1.0.0
  *
- * @date		29.12.13
+ * @date           29.12.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Components;
 
 use Nette;
 use Nette\Utils;
 
-use IPub;
 use IPub\AssetsLoader\Compilers;
 use IPub\AssetsLoader\Entities;
 use IPub\AssetsLoader\Files;
@@ -51,8 +52,8 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 	{
 		parent::__construct();
 
-		$this->compiler	= $compiler;
-		$this->asset	= $set;
+		$this->compiler = $compiler;
+		$this->asset = $set;
 
 		// Get files collection from asset
 		$this->setFiles($set->getFiles());
@@ -65,26 +66,28 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 	 *
 	 * @return Utils\Html
 	 */
-	abstract public function getElement($source);
+	abstract public function getElement(string $source) : Utils\Html;
 
 	/**
 	 * Generates link
 	 *
 	 * @return string
 	 */
-	abstract public function getLink();
+	abstract public function getLink() : string;
 
 	/**
 	 * Process files and render elements including generated content
 	 *
 	 * @return Utils\Html
 	 */
-	abstract public function renderFiles();
+	abstract public function renderFiles() : Utils\Html;
 
 	/**
 	 * Generate compiled file(s) and render link(s)
+	 *
+	 * @return void
 	 */
-	public function render()
+	public function render() : void
 	{
 		$hasArgs = func_num_args() > 0;
 
@@ -116,8 +119,10 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 
 	/**
 	 * Generates and render link
+	 *
+	 * @return void
 	 */
-	public function renderLink()
+	public function renderLink() : void
 	{
 		$hasArgs = func_num_args() > 0;
 
@@ -149,27 +154,27 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 	/**
 	 * @param Files\IFilesCollection $files
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function setFiles(Files\IFilesCollection $files)
+	public function setFiles(Files\IFilesCollection $files) : void
 	{
 		$this->files = $files;
-
-		return $this;
 	}
 
 	/**
 	 * @return Files\IFilesCollection
 	 */
-	public function getFiles()
+	public function getFiles() : Files\IFilesCollection
 	{
 		return $this->files;
 	}
 
 	/**
 	 * Remove all files
+	 *
+	 * @return void
 	 */
-	public function clear()
+	public function clear() : void
 	{
 		$this->files = NULL;
 	}
@@ -179,13 +184,11 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 	 *
 	 * @param Compilers\Compiler $compiler
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function setCompiler(Compilers\Compiler $compiler)
+	public function setCompiler(Compilers\Compiler $compiler) : void
 	{
 		$this->compiler = $compiler;
-
-		return $this;
 	}
 
 	/**
@@ -193,7 +196,7 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 	 *
 	 * @return Compilers\Compiler
 	 */
-	public function getCompiler()
+	public function getCompiler() : Compilers\Compiler
 	{
 		return $this->compiler;
 	}
@@ -201,19 +204,17 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 	/**
 	 * @param Entities\IAsset $asset
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function setAsset(Entities\IAsset $asset)
+	public function setAsset(Entities\IAsset $asset) : void
 	{
 		$this->asset = $asset;
-
-		return $this;
 	}
 
 	/**
 	 * @return Entities\IAsset
 	 */
-	public function getAsset()
+	public function getAsset() : Entities\IAsset
 	{
 		return $this->asset;
 	}
@@ -223,13 +224,11 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 	 *
 	 * @param string $type
 	 *
-	 * @return CssLoader
+	 * @return void
 	 */
-	public function setType($type)
+	public function setType(string $type) : void
 	{
 		$this->type = $type;
-
-		return $this;
 	}
 
 	/**
@@ -237,7 +236,7 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 	 *
 	 * @return string
 	 */
-	public function getType()
+	public function getType() : string
 	{
 		return $this->type;
 	}

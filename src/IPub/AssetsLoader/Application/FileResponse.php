@@ -2,28 +2,33 @@
 /**
  * FileResponse.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Application
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Application
+ * @since          1.0.0
  *
- * @date		22.01.15
+ * @date           22.01.15
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Application;
 
 use Nette;
 use Nette\Application;
 use Nette\Http;
-use Nette\Utils;
 
-use IPub;
 use IPub\AssetsLoader;
 
-class FileResponse extends Nette\Object implements Application\IResponse
+class FileResponse implements Application\IResponse
 {
+	/**
+	 * Implement nette smart magic
+	 */
+	use Nette\SmartObject;
+
 	/**
 	 * @var string
 	 */
@@ -32,7 +37,7 @@ class FileResponse extends Nette\Object implements Application\IResponse
 	/**
 	 * @param string $filePath
 	 */
-	public function __construct($filePath)
+	public function __construct(string $filePath)
 	{
 		$this->filePath = $filePath;
 	}
@@ -40,7 +45,7 @@ class FileResponse extends Nette\Object implements Application\IResponse
 	/**
 	 * @return string
 	 */
-	final public function getFilePath()
+	final public function getFilePath() : string
 	{
 		return $this->filePath;
 	}
@@ -50,8 +55,10 @@ class FileResponse extends Nette\Object implements Application\IResponse
 	 *
 	 * @param Http\IRequest $httpRequest
 	 * @param Http\IResponse $httpResponse
+	 *
+	 * @return void
 	 */
-	public function send(Http\IRequest $httpRequest, Http\IResponse $httpResponse)
+	public function send(Http\IRequest $httpRequest, Http\IResponse $httpResponse) : void
 	{
 		$httpResponse->setExpiration(Http\IResponse::PERMANENT);
 
@@ -64,7 +71,7 @@ class FileResponse extends Nette\Object implements Application\IResponse
 		$httpResponse->setContentType(AssetsLoader\Files\MimeMapper::getMimeFromFilename($this->filePath));
 		$httpResponse->setHeader('Content-Transfer-Encoding', 'binary');
 		$httpResponse->setHeader('Content-Length', filesize($this->filePath));
-		$httpResponse->setHeader('Content-Disposition', 'attachment; filename="'. basename($this->filePath) .'"');
+		$httpResponse->setHeader('Content-Disposition', 'attachment; filename="' . basename($this->filePath) . '"');
 
 		$httpResponse->setHeader('Access-Control-Allow-Origin', '*');
 

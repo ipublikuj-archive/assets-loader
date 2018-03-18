@@ -2,15 +2,17 @@
 /**
  * Panel.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Diagnostics
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Diagnostics
+ * @since          1.0.0
  *
- * @date		16.01.15
+ * @date           16.01.15
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Diagnostics;
 
@@ -22,12 +24,15 @@ use Latte\Runtime;
 
 use Tracy;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Entities;
 
-final class Panel extends Nette\Object implements Tracy\IBarPanel
+final class Panel implements Tracy\IBarPanel
 {
+	/**
+	 * Implement nette smart magic
+	 */
+	use Nette\SmartObject;
+
 	/**
 	 * @var string
 	 */
@@ -43,83 +48,106 @@ final class Panel extends Nette\Object implements Tracy\IBarPanel
 	 */
 	private $application;
 
+	/**
+	 * @param Application\Application $application
+	 */
 	public function __construct(Application\Application $application)
 	{
 		$this->application = $application;
 	}
 
-	public function register()
+	/**
+	 * @return void
+	 */
+	public function register() : void
 	{
 		Tracy\Debugger::getBar()->addPanel($this, 'ipub.assetsLoader');
 	}
 
-	public function addFile($source, $id, $type, $lastModified, $memory = NULL)
+	public function addFile($source, $id, $type, $lastModified, $memory = NULL) : void
 	{
 		if (is_array($source)) {
 			foreach ($source as $file) {
 				$this->files[(string) $file] = [
-					'id' => $id,
-					'type' => $type,
-					'memory' => $memory,
+					'id'           => $id,
+					'type'         => $type,
+					'memory'       => $memory,
 					'lastModified' => $lastModified
 				];
 			}
 
 		} else {
-			$this->files[(string) $source]=[
-				'id'			=> $id,
-				'type'			=> $type,
-				'memory'		=> $memory,
-				'lastModified'	=> $lastModified
+			$this->files[(string) $source] = [
+				'id'           => $id,
+				'type'         => $type,
+				'memory'       => $memory,
+				'lastModified' => $lastModified
 			];
 		}
 	}
 
-	private function link($file, $type, $timestamp)
+	/**
+	 * @param string $file
+	 * @param string $type
+	 * @param string $timestamp
+	 *
+	 * @return string
+	 */
+	private function link(string $file, string $type, string $timestamp) : string
 	{
 		$link = $this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => $type, 'id' => $file, 'timestamp' => $timestamp]);
+		$name = str_replace(WWW_DIR, '', $file);
 
-		return '<a href="'.$link.'" target="_blank">'.$file.'</a>';
+		return '<a href="' . $link . '" target="_blank">' . $name . '</a>';
 	}
 
-	private function getPresenter()
+	/**
+	 * @return Application\IPresenter|NULL
+	 */
+	private function getPresenter() : ?Application\IPresenter
 	{
 		return $this->application->getPresenter();
 	}
 
 	/*** IDebugPanel ***/
 
-	public function getTab()
+	/**
+	 * @return string
+	 */
+	public function getTab() : string
 	{
-		return '<span><img src="'.self::$icon.'">AssetsLoader ('.count($this->files).')</span>';
-	}
-
-	public function getPanel()
-	{
-		$buff = '<h1>AssetsLoader</h1>'
-			.'<div class="nette-inner">'
-			.'<table>'
-			.'<thead><tr><th>Source</th><th>Generated file</th><th>Memory usage</th></tr></thead>';
-
-		$i=0;
-
-		foreach ($this->files as $source => $generated) {
-			$buff.='<tr><th'.($i%2? 'class="nette-alt"' : '').'>'
-				. $source
-				.'</th><td>'
-				. $this->link($generated['id'], $generated['type'], $generated['lastModified'])
-				.'</td><td>'
-				. Runtime\Filters::bytes($generated['memory'])
-				.'</td></tr>';
-		}
-
-		return $buff .'</table></div>';
+		return '<span><img src="' . self::$icon . '">AssetsLoader (' . count($this->files) . ')</span>';
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getId()
+	public function getPanel() : string
+	{
+		$buff = '<h1>AssetsLoader</h1>'
+			. '<div class="nette-inner">'
+			. '<table>'
+			. '<thead><tr><th>Source</th><th>Generated file</th><th>Memory usage</th></tr></thead>';
+
+		$i = 0;
+
+		foreach ($this->files as $source => $generated) {
+			$buff .= '<tr><th' . ($i % 2 ? 'class="nette-alt"' : '') . '>'
+				. $source
+				. '</th><td>'
+				. $this->link($generated['id'], $generated['type'], $generated['lastModified'])
+				. '</td><td>'
+				. Runtime\Filters::bytes($generated['memory'])
+				. '</td></tr>';
+		}
+
+		return $buff . '</table></div>';
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getId() : string
 	{
 		return 'ipub.assetsLoader';
 	}

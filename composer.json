@@ -4,13 +4,13 @@
 	"description"	: "Extension for loading static CSS and JS files for Nette Framework",
 	"keywords"		: ["nette", "assets", "css", "js", "javascript", "tools"],
 	"homepage"		: "https://github.com/iPublikuj/assets-loader",
-	"license"		: ["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+	"license"		: ["GPL-2.0", "GPL-3.0"],
 
 	"authors": [
 		{
 			"name"		: "iPublikuj:cms",
 			"email"		: "info@ipublikuj.eu",
-			"homepage"	: "http://www.ipublikuj.eu/"
+			"homepage"	: "https://www.ipublikuj.eu/"
 		}
 	],
 
@@ -19,25 +19,41 @@
 		"issues"	:"https://github.com/iPublikuj/assets-loader/issues"
 	},
 
+	"extra": {
+		"ipub"	: {
+			"configuration" : {
+				"extensions" : {
+					"assetsLoader" : "IPub\\AssetsLoader\\DI\\AssetsLoaderExtension"
+				}
+			}
+		}
+	},
+
 	"require": {
-		"php"				: ">=5.4",
-		"nette/application"	: "~2.2",
-		"nette/caching"		: "~2.2",
-		"nette/di"			: "~2.2",
-		"nette/http"		: "~2.2",
-		"nette/utils"		: "~2.2",
-		"latte/latte"		: "~2.2"
+		"php"	: ">=7.1.0",
+
+		"nette/application"	: "~2.4",
+		"nette/caching"		: "~2.4",
+		"nette/di"			: "~2.4",
+		"nette/http"		: "~2.4",
+		"nette/utils"		: "~2.4",
+
+		"latte/latte"	: "~2.4",
+
+		"leafo/lessphp": "^0.5.0"
 	},
 
 	"require-dev": {
-		"nette/bootstrap"		: "~2.2",
-		"nette/forms"			: "~2.2",
-		"nette/mail"			: "~2.2",
-		"nette/robot-loader"	: "~2.2",
-		"nette/safe-stream"		: "~2.2",
-		"nette/tester"			: "@dev",
-		"tracy/tracy"			: "@dev",
-		"janmarek/mockista"		: "@dev"
+		"nette/bootstrap"		: "~2.4",
+		"nette/mail"			: "~2.4",
+		"nette/robot-loader"	: "~2.4",
+		"nette/safe-stream"		: "~2.3",
+		"nette/forms"			: "~2.4",
+		"nette/tester"			: "~2.0",
+
+		"tracy/tracy"	: "~2.4",
+
+		"pds/skeleton"	: "~1.0"
 	},
 
 	"autoload": {

@@ -2,15 +2,17 @@
 /**
  * LoaderFactory.php
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	common
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     common
+ * @since          1.0.0
  *
- * @date		30.12.13
+ * @date           30.12.13
  */
+
+declare(strict_types = 1);
 
 namespace IPub\AssetsLoader;
 
@@ -25,8 +27,13 @@ use IPub\AssetsLoader\DI;
 use IPub\AssetsLoader\Entities;
 use IPub\AssetsLoader\Filters;
 
-class LoaderFactory extends Nette\Object
+class LoaderFactory
 {
+	/**
+	 * Implement nette smart magic
+	 */
+	use Nette\SmartObject;
+
 	/**
 	 * @var Utils\ArrayHash
 	 */
@@ -40,54 +47,52 @@ class LoaderFactory extends Nette\Object
 	/**
 	 * @param string $name
 	 *
-	 * @return bool|Entities\IAsset
+	 * @return Entities\IAsset|NULL
 	 */
-	public function getAsset($name)
+	public function getAsset(string $name) : ?Entities\IAsset
 	{
 		if (isset($this->assets[$name])) {
 			return $this->assets[$name]->asset;
 		}
 
-		return FALSE;
+		return NULL;
 	}
 
 	/**
 	 * @param string $name
 	 *
-	 * @return bool|Compilers\Compiler
+	 * @return Compilers\Compiler|NULL
 	 */
-	public function getAssetCompiler($name)
+	public function getAssetCompiler(string $name) : ?Compilers\Compiler
 	{
 		if (isset($this->assets[$name])) {
 			return $this->assets[$name]->compiler;
 		}
 
-		return FALSE;
+		return NULL;
 	}
 
 	/**
 	 * @param string $name
 	 * @param Filters\IFilter $filter
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function addFilter($name, Filters\IFilter $filter)
+	public function addFilter(string $name, Filters\IFilter $filter) : void
 	{
 		$this->filters[$name] = $filter;
-
-		return $this;
 	}
 
 	/**
 	 * @param string $type
 	 * @param string $name
 	 *
-	 * @return Filters\IFilter|null
+	 * @return Filters\IFilter|NULL
 	 */
-	public function getFilter($type, $name)
+	public function getFilter(string $type, string $name) : ?Filters\IFilter
 	{
-		foreach($this->filters as $serviceName => $filter) {
-			if (Utils\Strings::contains($serviceName, $type .'.'. $name)) {
+		foreach ($this->filters as $serviceName => $filter) {
+			if (Utils\Strings::contains($serviceName, $type . '.' . $name)) {
 				return $filter;
 			}
 		}
@@ -100,15 +105,17 @@ class LoaderFactory extends Nette\Object
 	 *
 	 * @return Components\CssLoader
 	 */
-	public function createCssLoader($name = 'default')
+	public function createCssLoader(string $name = 'default') : ?Components\CssLoader
 	{
 		// Get asset entity by name
-		if (!$asset = $this->getAsset($name .'.'. DI\AssetsLoaderExtension::TYPE_CSS)) {
+		$asset = $this->getAsset($name . '.' . DI\AssetsLoaderExtension::TYPE_CSS);
+
+		if ($asset === NULL) {
 			return NULL;
 		}
 
 		// Get asset compiler
-		$compiler = $this->getAssetCompiler($name .'.'. DI\AssetsLoaderExtension::TYPE_CSS);
+		$compiler = $this->getAssetCompiler($name . '.' . DI\AssetsLoaderExtension::TYPE_CSS);
 
 		// Create component
 		$control = new Components\CssLoader($compiler, $asset);
@@ -121,15 +128,17 @@ class LoaderFactory extends Nette\Object
 	 *
 	 * @return Components\JsLoader
 	 */
-	public function createJsLoader($name = 'default')
+	public function createJsLoader(string $name = 'default') : ?Components\JsLoader
 	{
+		$asset = $this->getAsset($name . '.' . DI\AssetsLoaderExtension::TYPE_JS);
+
 		// Get asset entity by name
-		if (!$asset = $this->getAsset($name .'.'. DI\AssetsLoaderExtension::TYPE_JS)) {
+		if ($asset === NULL) {
 			return NULL;
 		}
 
 		// Get asset compiler
-		$compiler = $this->getAssetCompiler($name .'.'. DI\AssetsLoaderExtension::TYPE_JS);
+		$compiler = $this->getAssetCompiler($name . '.' . DI\AssetsLoaderExtension::TYPE_JS);
 
 		$control = new Components\JsLoader($compiler, $asset);
 
@@ -140,22 +149,20 @@ class LoaderFactory extends Nette\Object
 	 * @param Filters\IFilter $filter
 	 * @param string $name
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function registerFilter(Filters\IFilter $filter, $name)
+	public function registerFilter(Filters\IFilter $filter, string $name) : void
 	{
 		$this->filters[$name] = $filter;
-
-		return $this;
 	}
 
 	/**
 	 * @param array $configuration
 	 * @param Compilers\Compiler $compiler
 	 *
-	 * @return $this
+	 * @return void
 	 */
-	public function registerAsset(array $configuration, Compilers\Compiler $compiler)
+	public function registerAsset(array $configuration, Compilers\Compiler $compiler) : void
 	{
 		// Create set entity
 		$asset = (new Entities\Asset)
@@ -166,9 +173,7 @@ class LoaderFactory extends Nette\Object
 
 		// Add set into collection
 		$this->assets[$asset->getName()] = new Utils\ArrayHash;
-		$this->assets[$asset->getName()]->asset		= $asset;
-		$this->assets[$asset->getName()]->compiler	= $compiler;
-
-		return $this;
+		$this->assets[$asset->getName()]->asset = $asset;
+		$this->assets[$asset->getName()]->compiler = $compiler;
 	}
 }

@@ -3,15 +3,17 @@
  * Test: IPub\AssetsLoader\Compiler
  * @testCase
  *
- * @copyright	More in license.md
- * @license		http://www.ipublikuj.eu
- * @author		Adam Kadlec http://www.ipublikuj.eu
- * @package		iPublikuj:AssetsLoader!
- * @subpackage	Tests
- * @since		5.0
+ * @copyright      More in license.md
+ * @license        https://www.ipublikuj.eu
+ * @author         Adam Kadlec <adam.kadlec@ipublikuj.eu>
+ * @package        iPublikuj:AssetsLoader!
+ * @subpackage     Tests
+ * @since          1.0.0
  *
- * @date		27.01.15
+ * @date           27.01.15
  */
+
+declare(strict_types = 1);
 
 namespace IPubTests\AssetsLoader;
 
@@ -22,7 +24,6 @@ use Nette\Application\UI;
 use Tester;
 use Tester\Assert;
 
-use IPub;
 use IPub\AssetsLoader;
 
 require __DIR__ . '/../bootstrap.php';
@@ -30,19 +31,19 @@ require __DIR__ . '/../bootstrap.php';
 class ComponentTest extends Tester\TestCase
 {
 	/**
-	 * @var Nette\Application\IPresenterFactory
+	 * @var Application\IPresenterFactory
 	 */
 	private $presenterFactory;
 
 	/**
-	 * @var \SystemContainer|\Nette\DI\Container
+	 * @var Nette\DI\Container
 	 */
 	private $container;
 
 	/**
 	 * Set up
 	 */
-	public function setUp()
+	public function setUp() : void
 	{
 		parent::setUp();
 
@@ -52,13 +53,13 @@ class ComponentTest extends Tester\TestCase
 		$this->presenterFactory = $this->container->getByType('Nette\Application\IPresenterFactory');
 	}
 
-	public function testCssDefaultComponent()
+	public function testCssDefaultComponent() : void
 	{
 		// Create test presenter
 		$presenter = $this->createPresenter();
 
 		// Create GET request
-		$request = new Application\Request('Test', 'GET', array('action' => 'default'));
+		$request = new Application\Request('Test', 'GET', ['action' => 'default']);
 		// & fire presenter & catch response
 		$response = $presenter->run($request);
 
@@ -75,13 +76,13 @@ class ComponentTest extends Tester\TestCase
 		Assert::match('#^\/assets\/[0-9a-z]+\-t[0-9]+\.css$#i', (string) $styleElements[0]->attributes()->{'href'});
 	}
 
-	public function testJsDefaultComponent()
+	public function testJsDefaultComponent() : void
 	{
 		// Create test presenter
 		$presenter = $this->createPresenter();
 
 		// Create GET request
-		$request = new Application\Request('Test', 'GET', array('action' => 'default'));
+		$request = new Application\Request('Test', 'GET', ['action' => 'default']);
 		// & fire presenter & catch response
 		$response = $presenter->run($request);
 
@@ -98,26 +99,26 @@ class ComponentTest extends Tester\TestCase
 		Assert::match('#^\/assets\/[0-9a-z]+\-t[0-9]+\.js$#i', (string) $scriptElements[2]->attributes()->{'src'});
 	}
 
-	public function testCssGetLinkComponent()
+	public function testCssGetLinkComponent() : void
 	{
 		// Create test presenter
 		$presenter = $this->createPresenter();
 
 		// Create GET request
-		$request = new Application\Request('Test', 'GET', array('action' => 'cssLink'));
+		$request = new Application\Request('Test', 'GET', ['action' => 'cssLink']);
 		// & fire presenter & catch response
 		$response = $presenter->run($request);
 
 		Assert::match('#^\/assets\/[0-9a-z]+\-t[0-9]+\.css$#i', (string) $response->getSource());
 	}
 
-	public function testJsGetLinkComponent()
+	public function testJsGetLinkComponent() : void
 	{
 		// Create test presenter
 		$presenter = $this->createPresenter();
 
 		// Create GET request
-		$request = new Application\Request('Test', 'GET', array('action' => 'jsLink'));
+		$request = new Application\Request('Test', 'GET', ['action' => 'jsLink']);
 		// & fire presenter & catch response
 		$response = $presenter->run($request);
 
@@ -127,7 +128,7 @@ class ComponentTest extends Tester\TestCase
 	/**
 	 * @return Application\IPresenter
 	 */
-	protected function createPresenter()
+	protected function createPresenter() : Application\IPresenter
 	{
 		// Create test presenter
 		$presenter = $this->presenterFactory->createPresenter('Test');
@@ -138,21 +139,21 @@ class ComponentTest extends Tester\TestCase
 	}
 
 	/**
-	 * @return \SystemContainer|\Nette\DI\Container
+	 * @return Nette\DI\Container
 	 */
-	protected function createContainer()
+	protected function createContainer() : Nette\DI\Container
 	{
 		$config = new Nette\Configurator();
 		$config->setTempDirectory(TEMP_DIR);
 
 		$config->addParameters([
-			"staticFilesDir" => realpath(__DIR__ . DIRECTORY_SEPARATOR .'assets'),
+			"staticFilesDir" => realpath(__DIR__ . DIRECTORY_SEPARATOR . 'assets'),
 		]);
 
 		AssetsLoader\DI\AssetsLoaderExtension::register($config);
 
-		$config->addConfig(__DIR__ . '/files/config.neon', $config::NONE);
-		$config->addConfig(__DIR__ . '/files/presenters.neon', $config::NONE);
+		$config->addConfig(__DIR__ . '/files/config.neon');
+		$config->addConfig(__DIR__ . '/files/presenters.neon');
 
 		return $config->createContainer();
 	}
@@ -165,9 +166,9 @@ class TestPresenter extends UI\Presenter
 	/**
 	 * JS static files component
 	 *
-	 * @return \IPub\AssetsLoader\Components\CssLoader
+	 * @return AssetsLoader\Components\CssLoader
 	 */
-	protected function createComponentCss()
+	protected function createComponentCss() : AssetsLoader\Components\CssLoader
 	{
 		return $this->assetsLoader->createCssLoader('default');
 	}
@@ -175,27 +176,27 @@ class TestPresenter extends UI\Presenter
 	/**
 	 * JS static files component
 	 *
-	 * @return \IPub\AssetsLoader\Components\JsLoader
+	 * @return AssetsLoader\Components\JsLoader
 	 */
-	protected function createComponentJs()
+	protected function createComponentJs() : AssetsLoader\Components\JsLoader
 	{
 		return $this->assetsLoader->createJsLoader('default');
 	}
 
-	public function actionCssLink()
+	public function actionCssLink() : void
 	{
 		$this->sendResponse(new Application\Responses\TextResponse($this['css']->getLink()));
 	}
 
-	public function actionJsLink()
+	public function actionJsLink() : void
 	{
 		$this->sendResponse(new Application\Responses\TextResponse($this['js']->getLink()));
 	}
 
-	public function renderDefault()
+	public function renderDefault() : void
 	{
 		// Set template for component testing
-		$this->template->setFile(__DIR__ . DIRECTORY_SEPARATOR .'templates'. DIRECTORY_SEPARATOR .'default.latte');
+		$this->template->setFile(__DIR__ . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'default.latte');
 	}
 }
 
