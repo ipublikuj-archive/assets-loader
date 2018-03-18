@@ -37,7 +37,7 @@ class JsLoader extends AssetsLoader
 	 *
 	 * @return Utils\Html
 	 */
-	public function getElement($source) : Utils\Html
+	public function getElement(string $source) : Utils\Html
 	{
 		return Utils\Html::el('script')
 			->appendAttribute('type', $this->contentType)

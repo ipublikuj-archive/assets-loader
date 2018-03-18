@@ -88,11 +88,11 @@ class CssLoader extends AssetsLoader
 	 * Get link element
 	 *
 	 * @param string $source
-	 * @param string $media
+	 * @param string|NULL $media
 	 *
 	 * @return Utils\Html
 	 */
-	public function getElement(string $source, string $media = NULL) : Utils\Html
+	public function getElement(string $source, ?string $media = NULL) : Utils\Html
 	{
 		return Utils\Html::el('link')
 			->appendAttribute('rel', 'stylesheet' . ($this->isAlternate() ? ' alternate' : ''))

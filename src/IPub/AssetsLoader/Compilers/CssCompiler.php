@@ -16,6 +16,8 @@ declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Compilers;
 
+use IPub\AssetsLoader\Entities;
+
 class CssCompiler extends Compiler
 {
 	/**
@@ -33,22 +35,22 @@ class CssCompiler extends Compiler
 	/**
 	 * Load file content
 	 *
-	 * @param string $file path
+	 * @param Entities\IFile $file
 	 *
 	 * @return string
 	 */
-	protected function loadFile(string $file) : string
+	protected function loadFile(Entities\IFile $file) : string
 	{
 		$content = '';
 
 		// Check if file exists & is readable
-		if (file_exists($file) && is_readable($file)) {
+		if (file_exists($file->getPath()) && is_readable($file->getPath())) {
 			// Load the local CSS stylesheet
-			$content = file_get_contents($file);
+			$content = file_get_contents($file->getPath());
 
 			// Change to the current stylesheet's directory
 			$cwd = getcwd();
-			chdir(dirname($file));
+			chdir(dirname($file->getPath()));
 
 			// Replaces @import commands with the actual stylesheet content
 			// this happens recursively but omits external files

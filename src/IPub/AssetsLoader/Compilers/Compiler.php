@@ -242,13 +242,13 @@ abstract class Compiler
 	/**
 	 * Load file content
 	 *
-	 * @param string $file path
+	 * @param Entities\IFile $file
 	 *
 	 * @return string
 	 */
-	protected function loadFile(string $file) : string
+	protected function loadFile(Entities\IFile $file) : string
 	{
-		$content = file_get_contents($file);
+		$content = file_get_contents($file->getPath());
 
 		foreach ($this->fileFilters as $filter) {
 			$content = call_user_func($filter, $content, $this, $file);
@@ -260,7 +260,7 @@ abstract class Compiler
 	/**
 	 * Get joined content of all files
 	 *
-	 * @param array $files
+	 * @param Entities\IFile[] $files
 	 *
 	 * @return string
 	 */
