@@ -21,7 +21,6 @@ use Nette\Application;
 use Nette\Http;
 use Nette\Utils;
 
-use IPub;
 use IPub\AssetsLoader;
 use IPub\AssetsLoader\Caching;
 
@@ -58,10 +57,10 @@ class AssetsLoaderPresenter implements Application\IPresenter
 	private $fileCache;
 
 	/**
-	 * @param Http\IRequest $httpRequest
-	 * @param Application\IRouter $router
+	 * @param Http\IRequest|NULL $httpRequest
+	 * @param Application\IRouter|NULL $router
 	 * @param Caching\AssetCache $assetCache
-	 * @param Caching\FileCache $cache
+	 * @param Caching\FileCache $fileCache
 	 */
 	public function __construct(
 		Http\IRequest $httpRequest = NULL,
@@ -109,6 +108,7 @@ class AssetsLoaderPresenter implements Application\IPresenter
 	 * @return Application\IResponse
 	 *
 	 * @throws Application\BadRequestException
+	 * @throws \ReflectionException
 	 */
 	public function run(Application\Request $request) : Application\IResponse
 	{
@@ -148,11 +148,14 @@ class AssetsLoaderPresenter implements Application\IPresenter
 	 * @param  string
 	 * @param  array
 	 *
-	 * @return bool  does method exist?
+	 * @return mixed|bool does method exist?
+	 *
+	 * @throws Application\BadRequestException
+	 * @throws \ReflectionException
 	 */
-	protected function tryCall($method, array $params) : bool
+	protected function tryCall($method, array $params)
 	{
-		$rc = $this->getReflection();
+		$rc = new \ReflectionClass($this);
 
 		if ($rc->hasMethod($method)) {
 			$rm = $rc->getMethod($method);

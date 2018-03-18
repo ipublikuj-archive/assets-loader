@@ -18,15 +18,11 @@ namespace IPub\AssetsLoader\DI;
 
 use Nette;
 use Nette\DI;
-use Nette\PhpGenerator as Code;
-
-use Tracy;
 
 use IPub\AssetsLoader;
 use IPub\AssetsLoader\Application;
 use IPub\AssetsLoader\Caching;
 use IPub\AssetsLoader\Diagnostics;
-use IPub\AssetsLoader\Entities;
 
 class AssetsLoaderExtension extends DI\CompilerExtension
 {
@@ -305,11 +301,9 @@ class AssetsLoaderExtension extends DI\CompilerExtension
 	 */
 	private function loadConfig(string $name) : void
 	{
-		$this->compiler->parseServices(
-			$this->getContainerBuilder(),
-			$this->loadFromFile(__DIR__ . '/config/' . $name . '.neon'),
-			$this->prefix($name)
-		);
+		$config = $this->loadFromFile(__DIR__ . '/config/' . $name . '.neon');
+
+		$this->compiler->loadDefinitions($this->getContainerBuilder(), isset($config['services']) ? $config['services'] : [], $this->prefix($name));
 	}
 
 	/**

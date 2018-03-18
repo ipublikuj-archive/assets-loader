@@ -40,12 +40,14 @@ class JsLoader extends AssetsLoader
 	public function getElement($source) : Utils\Html
 	{
 		return Utils\Html::el('script')
-			->type($this->contentType)
-			->src($source);
+			->appendAttribute('type', $this->contentType)
+			->appendAttribute('src', $source);
 	}
 
 	/**
 	 * @return void
+	 *
+	 * @throws Nette\Application\UI\InvalidLinkException
 	 */
 	public function renderFiles() : void
 	{
@@ -78,10 +80,13 @@ class JsLoader extends AssetsLoader
 	 * @return string
 	 *
 	 * @throws Exceptions\InvalidStateException
+	 * @throws Nette\Application\UI\InvalidLinkException
 	 */
 	public function getLink() : string
 	{
 		$hasArgs = func_num_args() > 0;
+
+		$backup = NULL;
 
 		if ($hasArgs) {
 			// Backup files
@@ -110,7 +115,7 @@ class JsLoader extends AssetsLoader
 
 		$link = $this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'js', 'id' => $result->hash, 'timestamp' => $result->lastModified]);
 
-		if ($hasArgs) {
+		if ($hasArgs && $backup !== NULL) {
 			$this->setFiles($backup);
 		}
 

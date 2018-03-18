@@ -16,8 +16,6 @@ declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Filters\Files;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Compilers;
 
 /**
@@ -29,7 +27,7 @@ use IPub\AssetsLoader\Compilers;
 class CoffeeScriptFilter extends FilesFilter
 {
 	/**
-	 * @var path to coffee bin
+	 * @var string path to coffee bin
 	 */
 	private $bin;
 

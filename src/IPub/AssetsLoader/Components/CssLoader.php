@@ -19,6 +19,7 @@ namespace IPub\AssetsLoader\Components;
 use Nette;
 use Nette\Utils;
 
+use IPub\AssetsLoader\Entities;
 use IPub\AssetsLoader\Exceptions;
 use IPub\AssetsLoader\Files;
 
@@ -94,15 +95,17 @@ class CssLoader extends AssetsLoader
 	public function getElement(string $source, string $media = NULL) : Utils\Html
 	{
 		return Utils\Html::el('link')
-			->rel('stylesheet' . ($this->isAlternate() ? ' alternate' : ''))
-			->type($this->contentType)
-			->title($this->title)
-			->media(!trim($media) ? 'all' : $media)
+			->appendAttribute('rel', 'stylesheet' . ($this->isAlternate() ? ' alternate' : ''))
+			->appendAttribute('type', $this->contentType)
+			->appendAttribute('title', $this->title)
+			->appendAttribute('media', !trim($media) ? 'all' : $media)
 			->href($source);
 	}
 
 	/**
 	 * @return void
+	 *
+	 * @throws Nette\Application\UI\InvalidLinkException
 	 */
 	public function renderFiles() : void
 	{
@@ -113,6 +116,7 @@ class CssLoader extends AssetsLoader
 
 		$filesByMedia = [];
 
+		/** @var Entities\IFile $file */
 		foreach ($this->files as $file) {
 			$filesByMedia[$file->getAttribute()][(string) $file] = $file;
 		}
@@ -143,10 +147,15 @@ class CssLoader extends AssetsLoader
 	 * @return string
 	 *
 	 * @throws Exceptions\InvalidStateException
+	 *
+	 * @throws Exceptions\InvalidStateException
+	 * @throws Nette\Application\UI\InvalidLinkException
 	 */
 	public function getLink() : string
 	{
 		$hasArgs = func_num_args() > 0;
+
+		$backup = NULL;
 
 		if ($hasArgs) {
 			// Backup files
@@ -168,6 +177,7 @@ class CssLoader extends AssetsLoader
 
 		$filesByMedia = [];
 
+		/** @var Entities\IFile $file */
 		foreach ($this->files as $file) {
 			$filesByMedia[$file->getAttribute()][(string) $file] = $file;
 		}
@@ -185,7 +195,7 @@ class CssLoader extends AssetsLoader
 
 		$link = $this->getPresenter()->link(':IPub:AssetsLoader:assets', ['type' => 'css', 'id' => $result->hash, 'timestamp' => $result->lastModified]);
 
-		if ($hasArgs) {
+		if ($hasArgs && $backup !== NULL) {
 			$this->setFiles($backup);
 		}
 

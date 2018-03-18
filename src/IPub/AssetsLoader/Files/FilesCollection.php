@@ -16,13 +16,9 @@ declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Files;
 
-use Nette;
 use Nette\Utils;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Entities;
-use IPub\AssetsLoader\Exceptions;
 
 class FilesCollection implements IFilesCollection, \IteratorAggregate, \ArrayAccess
 {
@@ -103,7 +99,7 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate, \ArrayAcc
 
 				// Check if file is remote file
 				if (Utils\Strings::startsWith($file, 'http://') || Utils\Strings::startsWith($file, 'https://')) {
-					$this->addRemoteFile($file, $attribute);
+					$this->addRemoteFile($file);
 
 					// Local file detected
 				} else {
@@ -204,7 +200,7 @@ class FilesCollection implements IFilesCollection, \IteratorAggregate, \ArrayAcc
 	/**
 	 * Implements the IteratorAggregate
 	 *
-	 * @return \ArrayIterator
+	 * @return \ArrayIterator|Entities\IFile[]
 	 */
 	public function getIterator()
 	{

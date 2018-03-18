@@ -19,12 +19,10 @@ namespace IPub\AssetsLoader\Compilers;
 use Nette;
 use Nette\Utils;
 
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Caching;
 use IPub\AssetsLoader\Diagnostics;
 use IPub\AssetsLoader\Entities;
 use IPub\AssetsLoader\Exceptions;
-use IPub\AssetsLoader\Files;
 use IPub\AssetsLoader\Filters;
 
 abstract class Compiler
@@ -39,6 +37,18 @@ abstract class Compiler
 	 */
 	protected const TYPE_CSS = 'css';
 	protected const TYPE_JS = 'js';
+
+	/**
+	 * @var string
+	 */
+	protected $type;
+
+	/**
+	 * Compressed file name
+	 *
+	 * @var string
+	 */
+	protected $filename;
 
 	/**
 	 * @var Filters\Content\IContentFilter[]
@@ -237,10 +247,10 @@ abstract class Compiler
 	 */
 	protected function loadFile(string $file) : string
 	{
-		$content = file_get_contents($file->getPath());
+		$content = file_get_contents($file);
 
 		foreach ($this->fileFilters as $filter) {
-			$content = call_user_func($filter, $content, $this, $file->getPath());
+			$content = call_user_func($filter, $content, $this, $file);
 		}
 
 		return $content;

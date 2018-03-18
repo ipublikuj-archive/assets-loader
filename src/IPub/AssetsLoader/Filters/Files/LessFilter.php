@@ -16,8 +16,6 @@ declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Filters\Files;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Compilers;
 
 /**
@@ -51,6 +49,8 @@ class LessFilter extends FilesFilter
 	 * @param string $file
 	 *
 	 * @return string
+	 *
+	 * @throws \exception
 	 */
 	public function __invoke(string $code, Compilers\Compiler $compiler, string $file) : string
 	{

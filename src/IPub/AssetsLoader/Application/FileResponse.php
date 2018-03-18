@@ -62,7 +62,7 @@ class FileResponse implements Application\IResponse
 	{
 		$httpResponse->setExpiration(Http\IResponse::PERMANENT);
 
-		if (($inm = $httpRequest->getHeader('if-none-match')) && $inm == $this->etag) {
+		if (($inm = $httpRequest->getHeader('if-none-match'))) {
 			$httpResponse->setCode(Http\IResponse::S304_NOT_MODIFIED);
 
 			return;

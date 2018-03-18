@@ -17,11 +17,8 @@ declare(strict_types = 1);
 namespace IPub\AssetsLoader\Entities;
 
 use Nette;
-use Nette\Utils;
 
-use IPub\AssetsLoader\Exceptions;
 use IPub\AssetsLoader\Files;
-use IPub\AssetsLoader\Filters;
 
 class Asset implements IAsset
 {

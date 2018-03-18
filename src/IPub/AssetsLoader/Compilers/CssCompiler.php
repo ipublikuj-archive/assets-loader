@@ -37,7 +37,7 @@ class CssCompiler extends Compiler
 	 *
 	 * @return string
 	 */
-	protected function loadFile($file) : string
+	protected function loadFile(string $file) : string
 	{
 		$content = '';
 

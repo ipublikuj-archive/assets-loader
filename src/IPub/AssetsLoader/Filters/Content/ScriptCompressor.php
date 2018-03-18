@@ -19,8 +19,6 @@ declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Filters\Content;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Compilers;
 use IPub\AssetsLoader\Filters;
 
@@ -296,7 +294,7 @@ class ScriptCompressor implements IContentFilter, Filters\IFilter
 	}
 
 	/**
-	 * @return string|void|NULL
+	 * @return string|NULL
 	 */
 	private function next()
 	{
@@ -330,7 +328,7 @@ class ScriptCompressor implements IContentFilter, Filters\IFilter
 								//Unterminated comment.
 								$this->error = TRUE;
 
-								return;
+								return NULL;
 						}
 					}
 

@@ -16,14 +16,14 @@ declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Components;
 
-use Nette;
 use Nette\Utils;
+use Nette\Application;
 
 use IPub\AssetsLoader\Compilers;
 use IPub\AssetsLoader\Entities;
 use IPub\AssetsLoader\Files;
 
-abstract class AssetsLoader extends \Nette\Application\UI\Control
+abstract class AssetsLoader extends Application\UI\Control
 {
 	/**
 	 * Files compiler
@@ -43,6 +43,11 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 	 * @var Files\IFilesCollection
 	 */
 	protected $files;
+
+	/**
+	 * @var string
+	 */
+	protected $type;
 
 	/**
 	 * @param Compilers\Compiler $compiler
@@ -78,9 +83,9 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 	/**
 	 * Process files and render elements including generated content
 	 *
-	 * @return Utils\Html
+	 * @return void
 	 */
-	abstract public function renderFiles() : Utils\Html;
+	abstract public function renderFiles() : void;
 
 	/**
 	 * Generate compiled file(s) and render link(s)
@@ -90,6 +95,8 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 	public function render() : void
 	{
 		$hasArgs = func_num_args() > 0;
+
+		$backup = NULL;
 
 		if ($hasArgs) {
 			// Backup files
@@ -112,7 +119,7 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 		// Process rendering
 		$this->renderFiles();
 
-		if ($hasArgs) {
+		if ($hasArgs && $backup !== NULL) {
 			$this->setFiles($backup);
 		}
 	}
@@ -125,6 +132,8 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 	public function renderLink() : void
 	{
 		$hasArgs = func_num_args() > 0;
+
+		$backup = NULL;
 
 		if ($hasArgs) {
 			// Backup files
@@ -146,7 +155,7 @@ abstract class AssetsLoader extends \Nette\Application\UI\Control
 
 		echo $this->getLink();
 
-		if ($hasArgs) {
+		if ($hasArgs && $backup !== NULL) {
 			$this->setFiles($backup);
 		}
 	}

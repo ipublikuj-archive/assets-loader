@@ -19,12 +19,9 @@ namespace IPub\AssetsLoader\Diagnostics;
 use Nette;
 use Nette\Application;
 
-use Latte;
 use Latte\Runtime;
 
 use Tracy;
-
-use IPub\AssetsLoader\Entities;
 
 final class Panel implements Tracy\IBarPanel
 {

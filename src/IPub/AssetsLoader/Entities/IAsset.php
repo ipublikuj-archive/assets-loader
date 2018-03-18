@@ -16,10 +16,7 @@ declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Entities;
 
-use Nette\Utils;
-
 use IPub\AssetsLoader\Files;
-use IPub\AssetsLoader\Filters;
 
 interface IAsset
 {
@@ -28,7 +25,7 @@ interface IAsset
 	 *
 	 * @return void
 	 */
-	public function setName($name) : void;
+	public function setName(string $name) : void;
 
 	/**
 	 * @return string

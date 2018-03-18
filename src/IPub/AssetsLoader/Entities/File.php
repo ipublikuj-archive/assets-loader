@@ -18,11 +18,8 @@ namespace IPub\AssetsLoader\Entities;
 
 use Nette;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Exceptions;
 use IPub\AssetsLoader\Files;
-use IPub\AssetsLoader\Filters;
 
 class File implements IFile
 {

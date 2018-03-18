@@ -18,24 +18,14 @@ declare(strict_types = 1);
 
 namespace IPub\AssetsLoader\Filters\Files;
 
-use Nette;
 use Nette\Application;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Caching;
 use IPub\AssetsLoader\Compilers;
 use IPub\AssetsLoader\Files;
 
 class CssUrlsFilter extends FilesFilter
 {
-	/**
-	 * Site base path
-	 *
-	 * @var string
-	 */
-	private $basePath;
-
 	/**
 	 * @var Caching\FileCache
 	 */
@@ -109,7 +99,7 @@ class CssUrlsFilter extends FilesFilter
 		if (preg_match('/\.(gif|png|jpg)$/i', $url) && filesize($filePath) <= 10240 && preg_match('/\.(gif|png|jpg)$/i', $filePath, $extension)) {
 			$path = sprintf('data:image/%s;base64,%s', str_replace('jpg', 'jpeg', strtolower($extension[1])), base64_encode(file_get_contents($filePath)));
 
-		// Other files
+			// Other files
 		} else {
 			// Create file hash
 			$fileHash = $this->getHash($filePath);
@@ -127,16 +117,18 @@ class CssUrlsFilter extends FilesFilter
 			);
 
 			// Create route for specific file
-			$path = $this->getPresenter()->link(':IPub:AssetsLoader:files', ['id' => $fileHash]);
+			$presenter = $this->getPresenter();
+
+			$path = $presenter !== NULL ? $presenter->link(':IPub:AssetsLoader:files', ['id' => $fileHash]) : NULL;
 		}
 
 		return $path;
 	}
 
 	/**
-	 * @return Application\IPresenter
+	 * @return Application\IPresenter|NULL
 	 */
-	private function getPresenter() : Application\IPresenter
+	private function getPresenter() : ?Application\IPresenter
 	{
 		return $this->application->getPresenter();
 	}

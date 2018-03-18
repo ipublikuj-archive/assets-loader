@@ -19,8 +19,6 @@ namespace IPub\AssetsLoader;
 use Nette;
 use Nette\Utils;
 
-use IPub;
-use IPub\AssetsLoader;
 use IPub\AssetsLoader\Compilers;
 use IPub\AssetsLoader\Components;
 use IPub\AssetsLoader\DI;
@@ -165,11 +163,11 @@ class LoaderFactory
 	public function registerAsset(array $configuration, Compilers\Compiler $compiler) : void
 	{
 		// Create set entity
-		$asset = (new Entities\Asset)
-			->setName($configuration['name'])
-			->setFiles($configuration['files'])
-			->setJoinFiles($configuration['joinFiles'])
-			->setGzip($configuration['gzip']);
+		$asset = new Entities\Asset;
+		$asset->setName($configuration['name']);
+		$asset->setFiles($configuration['files']);
+		$asset->setJoinFiles($configuration['joinFiles']);
+		$asset->setGzip($configuration['gzip']);
 
 		// Add set into collection
 		$this->assets[$asset->getName()] = new Utils\ArrayHash;
