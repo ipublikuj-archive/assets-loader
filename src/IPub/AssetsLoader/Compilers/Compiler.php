@@ -194,8 +194,9 @@ abstract class Compiler
 	{
 		$modified = 0;
 
+		/** @var Entities\IFile $file */
 		foreach ($files as $file) {
-			$modified = max($modified, filemtime($file));
+			$modified = max($modified, filemtime($file->getPath()));
 		}
 
 		return $modified;
