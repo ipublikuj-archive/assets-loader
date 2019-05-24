@@ -1,11 +1,6 @@
 # Assets loader
 
-[![Build Status](https://img.shields.io/travis/iPublikuj/assets-loader.svg?style=flat-square)](https://travis-ci.org/iPublikuj/assets-loader)
-[![Scrutinizer Code Coverage](https://img.shields.io/scrutinizer/coverage/g/iPublikuj/assets-loader.svg?style=flat-square)](https://scrutinizer-ci.com/g/iPublikuj/assets-loader/?branch=master)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/iPublikuj/assets-loader.svg?style=flat-square)](https://scrutinizer-ci.com/g/iPublikuj/assets-loader/?branch=master)
-[![Latest Stable Version](https://img.shields.io/packagist/v/ipub/assets-loader.svg?style=flat-square)](https://packagist.org/packages/ipub/assets-loader)
-[![Composer Downloads](https://img.shields.io/packagist/dt/ipub/assets-loader.svg?style=flat-square)](https://packagist.org/packages/ipub/assets-loader)
-[![License](https://img.shields.io/packagist/l/ipub/assets-loader.svg?style=flat-square)](https://packagist.org/packages/ipub/assets-loader)
+**This package is abandoned and no longer maintained.**
 
 Extension for loading static CSS and JS files for [Nette Framework](http://nette.org/)
 
