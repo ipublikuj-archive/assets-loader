@@ -1,6 +1,9 @@
 # Assets loader
 
-**This package is abandoned and no longer maintained.**
+
+**This package is abandoned and no longer maintained!**
+
+
 
 Extension for loading static CSS and JS files for [Nette Framework](http://nette.org/)
 
